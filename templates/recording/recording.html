@@ -23,10 +23,10 @@
             <label for="product_id">产品
                 <select name="product_id" id="product_id" class="product" required>
                     <option value=""></option>
-                    {% for id,product in company.products.items() %}
-                        <option value="{{ id }}" data-price="{{ product.price }}"
-                                data-unit_name="{{ product.unit_name }}"
-                                data-unit_id="{{ product.unit_id }}">{{ product.name }}
+                    {% for product in company.EP %}
+                        <option value="{{ product.id }}" data-price="{{ product.price }}"
+                                data-unit_name="{{ product.unit.name }}"
+                                data-unit_id="{{ product.unit_id }}">{{ product.product.name }}
                         </option>
                     {% endfor %}
                 </select>

@@ -10,17 +10,19 @@
             </tr>
             </thead>
             <tbody>
-            {% for id,product in company.products.items() %}
+            {% for ep in company.EP %}
                 <tr>
-                    <td>{{ product.name }}</td>
-                    <td><select name="unit" id="unit_id" required>
-                        <option value=""></option>
-                        {% for unit in unit_list %}
-                            <option value="{{ unit.id }}"
-                                    {% if product.unit_id == unit.id %}selected{% endif %}>{{ unit.name }}</option>
-                        {% endfor %}
-                    </select></td>
-                    <td><input type="number" value="{{ product.price }}" name="{{ id }}" step="0.1"></td>
+                    <td>{{ ep.product.name }}</td>
+                    <td>
+                        <select name="unit" id="unit_id" required>
+                            <option value=""></option>
+                            {% for unit in ep.product.unit_all %}
+                                <option value="{{ unit.id }}"
+                                        {% if ep.unit_id == unit.id %}selected{% endif %}>{{ unit.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td><input type="number" value="{{ ep.price }}" name="{{ ep.id }}" step="0.1"></td>
                 </tr>
             {% endfor %}
             </tbody>

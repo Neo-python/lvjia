@@ -32,26 +32,16 @@ def fixed_price(company_id):
 @product.route('/fixed_price/<int:company_id>/', methods=['POST'])
 def fixed_price_post(company_id):
     """固定价格.表单提交
-    unit_list 获得顺序与页面排列顺序一致, 专价更新后需要与form保持同步.
     """
     form = request.form.to_dict()
     form.pop('unit')
     unit_list = request.form.getlist('unit')
+
     firm = Firm.query.get(company_id)
     # 更新专价数据
     for i, ep in enumerate(firm.EP):
-        product_id = str(ep.product_id)
-        ep.price = float(form[product_id])
+        ep.price = float(form[str(ep.id)])
         ep.unit_id = int(unit_list[i])
-        form.pop(product_id)  # 弹出已经操作的数据
-        unit_list.pop(i)  # unit_list需要保持同步
-
-    # 新建所有新产品专价
-    for i, (product_id, price) in enumerate(form.items()):
-        product_id = int(product_id)
-        price = float(price)
-        unit_id = int(unit_list[i])
-        ExternalPrice(product_id=product_id, company_id=company_id, price=price, unit_id=unit_id).direct_commit_()
     firm.direct_update_()  # 保存操作
     return redirect(url_for('product.fixed_price', company_id=company_id))
 
@@ -65,16 +55,14 @@ def new():
 @product.route('/new/', methods=['POST'])
 def new_post():
     """新增产品.表单提交
-    新增产品数据提交后,为每家公司设定专价.
+    新增产品数据提交后,broadcast函数为每家公司设定专价.
     """
     name = request.form.get('name')
     price = request.form.get('price')
     unit_id = request.form.get('unit_id')
 
-    new_product = Product(name=name, price=price, unit_id=unit_id).direct_commit_()
-    for company in Firm.query.all():
-        ExternalPrice(product_id=new_product.id, company_id=company.id, price=new_product.price,
-                      unit_id=new_product.unit_id).direct_commit_()
+    Product(name=name, price=price, unit_id=unit_id).direct_commit_().broadcast()
+
     return redirect(url_for('product.index'))
 
 
@@ -118,11 +106,10 @@ def unit_new_post():
     return redirect(url_for('product.unit_index'))
 
 
-@product.route('/unit/child/<int:product_id>/', methods=['GET'])
-def unit_child(product_id):
+@product.route('/unit/child/<int:unit_id>/', methods=['GET'])
+def unit_child(unit_id):
     """设定子单位"""
-    product_ = Product.query.get(product_id)
-    return render_template('product/unit_child.html', parent=product_.unit)
+    return render_template('product/unit_child.html', parent=ProductUnit.query.get(unit_id))
 
 
 @product.route('/unit/child/<int:product_id>/', methods=['POST'])

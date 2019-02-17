@@ -23,7 +23,7 @@ def new_post():
     name = request.form.get('name')
     address = request.form.get('address')
 
-    new_company = Firm(name=name, address=address).direct_commit_()
+    new_company = Firm(name=name, address=address).direct_commit_().init_external_price()
     return redirect(url_for('firm.people_new', company_id=new_company.id))
 
 

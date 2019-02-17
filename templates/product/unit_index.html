@@ -4,7 +4,6 @@
 {% endblock %}
 {% block body %}
     <a href="{{ url_for('product.unit_new') }}">新增计量单位</a>
-
     <table>
         <thead>
         <tr>
@@ -18,7 +17,7 @@
             <tr>
                 <td>{{ unit.name }}</td>
                 <td>{{ unit.multiple }}</td>
-                <td>操作</td>
+                <td>操作<a href="{{ url_for('product.unit_child', unit_id=unit.id) }}">添加子单位</a></td>
             </tr>
         {% endfor %}
 

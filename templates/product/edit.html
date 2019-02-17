@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
 {% block body %}
-    <a href="{{ url_for('product.unit_child', product_id=product.id) }}">添加子单位</a>
     <form action="" method="post">
         <label for="name">名称<input type="text" id="name" name="name" value="{{ product.name }}"></label>
         <span>计量单位 {{ product.unit.name }}</span>

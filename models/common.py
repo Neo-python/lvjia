@@ -63,18 +63,12 @@ class Firm(Common, db.Model):
         self.name = name
         self.address = address
 
-    @property
-    def products(self):
-        """产品价格,固定价格将会覆盖原价"""
-        products = Product.query.all()
-        ep = self.EP
-        prices = dict()
-        for i in products:
-            prices.update({i.id: {'name': i.name, 'unit_id': i.unit_id, 'unit_name': i.unit.name, 'price': i.price}})
-        for i in ep:
-            prices[i.product_id]['price'] = i.price
-            prices[i.product_id]['unit_id'] = i.unit_id
-        return prices
+    def init_external_price(self):
+        """初始化所有产品的公司专价,只允许在新建公司时执行一次"""
+        for product in Product.query.all():
+            ExternalPrice(product_id=product.id, company_id=self.id, price=product.price,
+                          unit_id=product.unit_id).direct_add_()
+        return self.direct_commit_()
 
 
 class Product(Common, db.Model):
@@ -98,7 +92,15 @@ class Product(Common, db.Model):
     @property
     def unit_all(self):
         """可用单位"""
-        return ProductUnit.query.filter(or_(ProductUnit.parent == 0, ProductUnit.product_id == self.id)).all()
+        return ProductUnit.query.filter(or_(ProductUnit.id == self.unit_id, ProductUnit.product_id == self.id)).all()
+
+    def broadcast(self):
+        """新建产品完成后,只允许执行一次.将数据更新每家公司的专价
+        broadcast:广播
+        """
+        for company in Firm.query.all():
+            ExternalPrice(product_id=self.id, company_id=company.id, price=self.price,
+                          unit_id=self.unit_id).direct_commit_()
 
 
 class ProductUnit(Common, db.Model):
@@ -107,11 +109,11 @@ class ProductUnit(Common, db.Model):
     id = db.Column(db.Integer, index=True, primary_key=True)
 
     name = db.Column(db.String(length=50), nullable=False, comment='产品名')
-    multiple = db.Column(db.Integer, default=1, nullable=False, comment='最小单位的倍数')
+    multiple = db.Column(db.DECIMAL(precision=9, decimal_return_scale=2), default=1, nullable=False, comment='最小单位的倍数')
     parent = db.Column(db.SMALLINT, default=0, nullable=False, comment='单位等级,0:基础单位,其他:父级单位.')
     product_id = db.Column(db.Integer, default=0, nullable=False, comment='单位目标,基础单位为0,子单位为产品ID')
 
-    def __init__(self, name: str, multiple: int, parent: int, product_id: int):
+    def __init__(self, name: str, multiple: float, parent: int, product_id: int):
         self.name = name
         self.multiple = multiple
         self.parent = parent
