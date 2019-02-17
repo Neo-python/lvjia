@@ -1,1 +1,83 @@
 {% extends 'base.html' %}
+{% block head %}
+    <link rel="stylesheet" type="text/css" href="/static/js/bootstrap-datetimepicker/css/datetimepicker.css"/>
+    <style>
+        .unit {
+            min-width: 10px;
+        }
+    </style>
+{% endblock %}
+{% block body %}
+    <div id="template" hidden>
+        <div>
+            <label for="product_id">产品 <select name="product_id" id="product_id" class="product" required>
+                <option value=""></option>
+                {% for id,product in company.products.items() %}
+                    <option value="{{ id }}" data-price="{{ product.price }}"
+                            data-unit="{{ product.unit_name }}">{{ product.name }}</option>
+                {% endfor %}
+            </select></label>
+            <label for="price">单价 <input type="number" name="price" id="price" step="0.1" class="price"
+                                         required><span>单位: <span class="unit"></span> </span></label>
+            <label for="quantity">数量 <input type="number" name="quantity" id="quantity" step="0.1" required></label>
+            <button class="delete" type="button">删除</button>
+        </div>
+    </div>
+    <form action="" method="post">
+        <h1>{{ company.name }}</h1>
+        <button>提交</button>
+        <label for="deadline">完成时间<input size="16" type="text" readonly class="form_datetime" name="deadline"></label>
+        <label for="remarks">订单备注信息<textarea name="remarks" id="" cols="30" rows="10"></textarea></label>
+        <div id="input"></div>
+        <button type="button" id="add_input">添加</button>
+    </form>
+
+
+{% endblock %}
+{% block script %}
+    <script type="text/javascript" src="/static/js/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js"></script>
+    <script type="text/javascript">
+        $(".form_datetime").datetimepicker({
+            format: 'yyyy-mm-dd hh:mm',
+            language: 'cn',
+            todayBtn: 'linked'
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            function add_input() {
+                var template = $('#template');
+                var input = $('#input');
+                input.append(template.html())
+            }
+
+            for (var i = 0; i < 5; i++) {
+                add_input()
+            }
+            // 初始化结束
+            $('#add_input').on('click', function () {
+                //添加按钮触发一次增加输入条
+                add_input()
+            });
+
+            $('.product').change(function () {
+                // 选中产品发生改变触发,修改对应位置价格值,然后激活数量输入框
+                var price = $(this).find("option:selected").attr('data-price');
+                var unit = $(this).find("option:selected").attr('data-unit');
+                var parents = $(this).parent().siblings();
+                var unit_span = parents.find('.unit');
+                var price_input = parents.find('.price');
+                var quantity_input = parents.find('#quantity');
+                price_input.attr('value', price); // 变更选中项价格
+                quantity_input.focus(); // 激活数量输入框
+                unit_span.html(unit)
+            });
+
+            $('.delete').click(function () {
+                // 删除一行
+                var div = $(this).parent();
+                div.remove();
+            })
+        });
+    </script>
+{% endblock %}

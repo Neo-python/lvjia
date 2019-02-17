@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block body %}
+    <form action="{{ url_for('firm.new_post') }}" method="post">
+        <label for="name">名称<input type="text" id="name" name="name"></label>
+        <label for="address">地址<input type="text" id="address" name="address"></label>
+        <button>添加</button>
+    </form>
+{% endblock %}
+{% block script %}
+
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block body %}
+    <table>
+        <thead>
+        <tr>
+            <th>公司/单位名</th>
+            <th>地址</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>{{ company.name }}</td>
+            <td>{{ company.address }}</td>
+            <td>操作 <a href="{{ url_for('firm.company_edit', company_id=company.id) }}">编辑</a></td>
+        </tr>
+        </tbody>
+    </table>
+    <a href="{{ url_for('firm.people_new', company_id=company.id) }}">新建联系人</a>
+    <a href="{{ url_for('product.fixed_price', company_id=company.id) }}">产品定价</a>
+    <table>
+        <thead>
+        <tr>
+            <th>姓名</th>
+            <th>联系电话</th>
+            <th>备注信息</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for people in company.personnel %}
+            <tr>
+                <td>{{ people.name }}</td>
+                <td>{{ people.telephone }}</td>
+                <td>{{ people.remarks }}</td>
+                <td>操作 <a href="{{ url_for('firm.people_edit', people_id=people.id) }}">编辑</a></td>
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+    <table>
+        <thead>
+        <tr>
+            <th>订单编号</th>
+            <th>订单时间</th>
+            <th>订单信息</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for remarks in remarks_list %}
+            <tr>
+                <td>{{ remarks.id }}</td>
+                <td>{{ remarks.string_deadline }}</td>
+                <td>{{ remarks.remarks }}</td>
+                <td>操作 <a href="">打印</a></td>
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+{% endblock %}
+{% block script %}
+
+{% endblock %}

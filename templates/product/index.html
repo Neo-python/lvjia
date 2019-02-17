@@ -1,1 +1,29 @@
 {% extends 'base.html' %}
+{% block body %}
+    <a href="{{ url_for('product.new') }}">新增产品</a>
+    <table>
+        <thead>
+        <tr>
+            <th>名称</th>
+            <th>单位</th>
+            <th>单价</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for product in products %}
+            <tr>
+                <td>{{ product.name }}</td>
+                <td>{{ product.unit.name }}</td>
+                <td>{{ product.price }}</td>
+                <td><a href="{{ url_for('product.edit', product_id=product.id) }}">编辑</a></td>
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+    {{ page|safe }}
+{% endblock %}
+{% block script %}
+
+{% endblock %}

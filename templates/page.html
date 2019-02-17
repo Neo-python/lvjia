@@ -1,0 +1,30 @@
+<div class="ui  floated pagination menu page_div">
+    <a href="{{ data.url }}?page=1{{ data.url_args }}" class="icon item"><i
+            class="glyphicon glyphicon-chevron-left"></i></a>
+    {% if data.max_num <= 5 %}
+        {% for num in range(data.max_num) %}
+            <a class="item {% if data.current_page_num == loop.index %}{{ data.action }}{% endif %} "
+               href="{{ data.url }}?page={{ loop.index }}{{ data.url_args }}">{{ loop.index }}</a>
+        {% endfor %}
+        <a href="{{ data.url }}?page={{ data.max_num }}{{ data.url_args }}" class="icon item"><i
+                class="glyphicon glyphicon-chevron-right"></i></a>
+    {% else %}
+
+        {% set before = data.current_page_num - 2 %}{% set rear =  data.current_page_num + 2 %}{% if before <= 0 %}
+            {% set rear = rear + (1 - before) %}{% set before = 1 %}{% elif rear > data.max_num %}
+            {% set before = before - (rear - data.max_num)|abs %}
+            {% set rear = data.max_num %}{% endif %}{% set rear = rear + 1 %}
+        <a href="{{ data.url }}?page=1{{ data.url_args }}" class="icon item"><i class="up chevron icon"></i></a>
+        {% for i in range(before, rear) %}
+            <a class="item {% if data.current_page_num == i %} {{ data.action }}{% endif %}"
+               href="{{ data.url }}?page={{ i }}{{ data.url_args }}">
+                {{ i }}
+            </a>
+        {% endfor %}
+        <a href="{{ data.url }}?page={{ data.max_num }}{{ data.url_args }}" class="icon item"><i
+                class="glyphicon glyphicon-chevron-right"></i></a>
+    {% endif %}
+</div>
+
+
+

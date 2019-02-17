@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block body %}
+    <form action="" method="post">
+        <label for="name">名称<input type="text" id="name" name="name" required></label>
+        <label for="unit_id">计量单位 <select name="unit_id" id="unit_id" required>
+            <option value=""></option>
+            {% for unit in unit_list %}
+                <option value="{{ unit.id }}">{{ unit.name }}</option>
+            {% endfor %}
+        </select></label>
+        <label for="price">单价<input type="number" id="price" name="price" step="0.1" required></label>
+        <button>保存</button>
+    </form>
+{% endblock %}
+{% block script %}
+
+{% endblock %}

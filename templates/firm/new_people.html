@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block body %}
+    <form action="{{ url_for('firm.people_new_post') }}" method="post">
+        <input type="text" name="company_id" value="{{ company_id }}" hidden>
+        <label for="name">姓名<input type="text" name="name" id="name"></label>
+        <label for="telephone">联系方式<input type="text" name="telephone" id="telephone"></label>
+        <label for="remarks">备注信息<input type="text" name="remarks" id="remarks"></label>
+        <button>保存</button>
+    </form>
+{% endblock %}

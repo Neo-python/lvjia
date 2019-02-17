@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block head %}
+
+{% endblock %}
+{% block body %}
+    <a href="{{ url_for('product.unit_new') }}">新增计量单位</a>
+
+    <table>
+        <thead>
+        <tr>
+            <th>单位名</th>
+            <th>倍数</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for unit in unit_list %}
+            <tr>
+                <td>{{ unit.name }}</td>
+                <td>{{ unit.multiple }}</td>
+                <td>操作</td>
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+
+{% endblock %}
+{% block script %}
+
+{% endblock %}

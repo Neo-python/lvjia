@@ -7,12 +7,12 @@ app = create_app()
 db.init_app(app=app)
 
 from views.recording import recording
-from views.company import company
+from views.firm import firm
 from views.product import product
 from views.billing import billing
 
 app.register_blueprint(recording)
-app.register_blueprint(company)
+app.register_blueprint(firm)
 app.register_blueprint(product)
 app.register_blueprint(billing)
 

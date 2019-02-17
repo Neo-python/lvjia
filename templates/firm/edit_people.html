@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block body %}
+    <form action="" method="post">
+        <label for="name">姓名<input type="text" name="name" id="name" value="{{ people.name }}"></label>
+        <label for="telephone">联系方式<input type="text" name="telephone" id="telephone"
+                                          value="{{ people.telephone }}"></label>
+        <label for="remarks">备注信息<input type="text" name="remarks" id="remarks" value="{{ people.remarks }}"></label>
+        <button>保存</button>
+    </form>
+    <a href="{{ url_for('firm.people_delete', people_id=people.id) }}">删除人员</a>
+{% endblock %}
+{% block script %}
+
+{% endblock %}
