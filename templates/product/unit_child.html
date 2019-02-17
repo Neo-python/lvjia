@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block head %}
+
+{% endblock %}
+{% block body %}
+    <form action="" method="post">
+        <span>{{ parent.name }}--></span>
+        <label for="name">子单位: <input type="text" id="name" name="name" required></label>
+        <label for="multiple">对于<{{ parent.name }}>的倍数 <input type="number" id="multiple" name="multiple"
+                                                              step="0.1" required value="1">
+        </label>
+        <button>提交</button>
+    </form>
+{% endblock %}
+{% block script %}
+
+{% endblock %}

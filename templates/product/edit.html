@@ -1,14 +1,9 @@
 {% extends 'base.html' %}
 {% block body %}
+    <a href="{{ url_for('product.unit_child', product_id=product.id) }}">添加子单位</a>
     <form action="" method="post">
         <label for="name">名称<input type="text" id="name" name="name" value="{{ product.name }}"></label>
-        <label for="unit_id">计量单位 <select name="unit_id" id="unit_id" required>
-            <option value=""></option>
-            {% for unit in unit_list %}
-                <option value="{{ unit.id }}"
-                        {% if product.unit_id == unit.id %}selected{% endif %}>{{ unit.name }}</option>
-            {% endfor %}
-        </select></label>
+        <span>计量单位 {{ product.unit.name }}</span>
         <label for="price">单价<input type="number" id="price" name="price" step="0.1"
                                     value="{{ product.price }}"></label>
         <button>提交</button>

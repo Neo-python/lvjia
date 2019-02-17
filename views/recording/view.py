@@ -25,11 +25,16 @@ def recording_post(company_id):
     order_remarks = OrderRemarks(company_id=company_id, remarks=remarks, deadline=deadline).direct_flush_()
 
     # 创建订单具体信息
+    personnel_list = request.form.getlist('personnel')
     product_id_list = request.form.getlist('product_id')
     price_list = request.form.getlist('price')
     quantity_list = request.form.getlist('quantity')
+    unit_list = request.form.getlist('unit')
 
-    for product_id, price, quantity in zip(product_id_list, price_list, quantity_list):
-        OrderForm(product_id=product_id, price=price, quantity=quantity, remarks_id=order_remarks.id).direct_add_()
+    for person_id, product_id, price, quantity, unit_id in zip(personnel_list, product_id_list, price_list,
+                                                               quantity_list, unit_list):
+
+        OrderForm(person_id=person_id, product_id=product_id, price=price, quantity=quantity,
+                  remarks_id=order_remarks.id, unit_id=unit_id).direct_add_()
     order_remarks.direct_update_()  # 保存提交内容
     return redirect(url_for('billing.index'))

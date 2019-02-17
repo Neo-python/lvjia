@@ -19,14 +19,14 @@ def index():
 @product.route('/unit/', methods=['GET'])
 def unit_index():
     """产品单位首页"""
-    return render_template('product/unit_index.html', unit_list=ProductUnit.query.all())
+    return render_template('product/unit_index.html', unit_list=ProductUnit.basic_unit())
 
 
 @product.route('/fixed_price/<int:company_id>/', methods=['GET'])
 def fixed_price(company_id):
     """固定价格"""
     company = Firm.query.get(company_id)
-    return render_template('product/fixed_price.html', company=company, unit_list=ProductUnit.query.all())
+    return render_template('product/fixed_price.html', company=company, unit_list=ProductUnit.basic_unit())
 
 
 @product.route('/fixed_price/<int:company_id>/', methods=['POST'])
@@ -59,17 +59,22 @@ def fixed_price_post(company_id):
 @product.route('/new/', methods=['GET'])
 def new():
     """新增产品页"""
-    return render_template('product/new.html', unit_list=ProductUnit.query.all())
+    return render_template('product/new.html', unit_list=ProductUnit.basic_unit())
 
 
 @product.route('/new/', methods=['POST'])
 def new_post():
-    """新增产品.表单提交"""
+    """新增产品.表单提交
+    新增产品数据提交后,为每家公司设定专价.
+    """
     name = request.form.get('name')
     price = request.form.get('price')
     unit_id = request.form.get('unit_id')
 
-    Product(name=name, price=price, unit_id=unit_id).direct_commit_()
+    new_product = Product(name=name, price=price, unit_id=unit_id).direct_commit_()
+    for company in Firm.query.all():
+        ExternalPrice(product_id=new_product.id, company_id=company.id, price=new_product.price,
+                      unit_id=new_product.unit_id).direct_commit_()
     return redirect(url_for('product.index'))
 
 
@@ -77,7 +82,7 @@ def new_post():
 def edit(product_id):
     """编辑产品"""
     return render_template('product/edit.html', product=Product.query.get(product_id),
-                           unit_list=ProductUnit.query.all())
+                           unit_list=ProductUnit.basic_unit())
 
 
 @product.route('/<int:product_id>/edit/', methods=['POST'])
@@ -109,5 +114,23 @@ def unit_new_post():
     """新建单位.表单提交"""
     name = request.form.get('name')
     multiple = request.form.get('multiple')
-    ProductUnit(name=name, multiple=multiple).direct_commit_()
+    ProductUnit(name=name, multiple=multiple, parent=0, product_id=0).direct_commit_()
     return redirect(url_for('product.unit_index'))
+
+
+@product.route('/unit/child/<int:product_id>/', methods=['GET'])
+def unit_child(product_id):
+    """设定子单位"""
+    product_ = Product.query.get(product_id)
+    return render_template('product/unit_child.html', parent=product_.unit)
+
+
+@product.route('/unit/child/<int:product_id>/', methods=['POST'])
+def unit_child_post(product_id):
+    """设定子单位.表单提交"""
+    name = request.form.get('name')
+    multiple = int(request.form.get('multiple'))
+    product_ = Product.query.get(product_id)
+
+    ProductUnit(name=name, multiple=multiple, parent=product_.unit_id, product_id=product_id).direct_commit_()
+    return redirect(url_for('product.edit', product_id=product_id))

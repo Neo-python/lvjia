@@ -2,23 +2,40 @@
 {% block head %}
     <link rel="stylesheet" type="text/css" href="/static/js/bootstrap-datetimepicker/css/datetimepicker.css"/>
     <style>
-        .unit {
-            min-width: 10px;
+        .unit_span {
+            display: inline-block;
+            min-width: 45px;
         }
     </style>
 {% endblock %}
 {% block body %}
     <div id="template" hidden>
         <div>
-            <label for="product_id">产品 <select name="product_id" id="product_id" class="product" required>
-                <option value=""></option>
-                {% for id,product in company.products.items() %}
-                    <option value="{{ id }}" data-price="{{ product.price }}"
-                            data-unit="{{ product.unit_name }}">{{ product.name }}</option>
-                {% endfor %}
-            </select></label>
-            <label for="price">单价 <input type="number" name="price" id="price" step="0.1" class="price"
-                                         required><span>单位: <span class="unit"></span> </span></label>
+            <label for="personnel">联系人
+                <select name="personnel" id="personnel" class="personnel" required>
+                    <option value=""></option>
+                    {% for person in company.personnel %}
+                        <option value="{{ person.id }}">{{ person.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </label>
+            <label for="product_id">产品
+                <select name="product_id" id="product_id" class="product" required>
+                    <option value=""></option>
+                    {% for id,product in company.products.items() %}
+                        <option value="{{ id }}" data-price="{{ product.price }}"
+                                data-unit_name="{{ product.unit_name }}"
+                                data-unit_id="{{ product.unit_id }}">{{ product.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </label>
+            <label for="price">单价 <input type="number" name="price" id="price" step="0.1" class="price" required>
+                <span>单位: <span class="unit_span"></span>
+                    <input type="text" readonly name="unit" class="unit" hidden>
+                </span>
+            </label>
             <label for="quantity">数量 <input type="number" name="quantity" id="quantity" step="0.1" required></label>
             <button class="delete" type="button">删除</button>
         </div>
@@ -63,14 +80,18 @@
             $('.product').change(function () {
                 // 选中产品发生改变触发,修改对应位置价格值,然后激活数量输入框
                 var price = $(this).find("option:selected").attr('data-price');
-                var unit = $(this).find("option:selected").attr('data-unit');
+                var unit_id = $(this).find("option:selected").attr('data-unit_id');
+                var unit_name = $(this).find("option:selected").attr('data-unit_name');
                 var parents = $(this).parent().siblings();
-                var unit_span = parents.find('.unit');
+                var unit_input = parents.find('.unit');
+                var unit_span = parents.find('.unit_span');
                 var price_input = parents.find('.price');
                 var quantity_input = parents.find('#quantity');
                 price_input.attr('value', price); // 变更选中项价格
                 quantity_input.focus(); // 激活数量输入框
-                unit_span.html(unit)
+                unit_input.attr('value', unit_id); // 设置单位
+                unit_span.html(unit_name) // 设置单位
+
             });
 
             $('.delete').click(function () {

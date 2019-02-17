@@ -1,4 +1,5 @@
 """通用模型模块"""
+from sqlalchemy import or_
 from init import db
 from plugins.common import OrmVerity
 
@@ -56,7 +57,6 @@ class Firm(Common, db.Model):
     address = db.Column(db.String(length=255), comment='公司/单位地址')
 
     personnel = db.relationship('People', lazy='select', cascade="all, delete-orphan", backref='firm')
-
     EP = db.relationship('ExternalPrice', lazy='select', cascade="all, delete-orphan", backref='firm')
 
     def __init__(self, name: str, address: str):
@@ -95,6 +95,11 @@ class Product(Common, db.Model):
         self.price = price
         self.unit_id = unit_id
 
+    @property
+    def unit_all(self):
+        """可用单位"""
+        return ProductUnit.query.filter(or_(ProductUnit.parent == 0, ProductUnit.product_id == self.id)).all()
+
 
 class ProductUnit(Common, db.Model):
     """产品单位"""
@@ -103,10 +108,19 @@ class ProductUnit(Common, db.Model):
 
     name = db.Column(db.String(length=50), nullable=False, comment='产品名')
     multiple = db.Column(db.Integer, default=1, nullable=False, comment='最小单位的倍数')
+    parent = db.Column(db.SMALLINT, default=0, nullable=False, comment='单位等级,0:基础单位,其他:父级单位.')
+    product_id = db.Column(db.Integer, default=0, nullable=False, comment='单位目标,基础单位为0,子单位为产品ID')
 
-    def __init__(self, name: str, multiple: int):
+    def __init__(self, name: str, multiple: int, parent: int, product_id: int):
         self.name = name
         self.multiple = multiple
+        self.parent = parent
+        self.product_id = product_id
+
+    @staticmethod
+    def basic_unit():
+        """返回基础单位"""
+        return ProductUnit.query.filter(ProductUnit.parent == 0).all()
 
 
 class People(Common, db.Model):
@@ -118,6 +132,8 @@ class People(Common, db.Model):
     telephone = db.Column(db.String(length=13), nullable=False, comment='联系方式')
     company_id = db.Column(db.Integer, db.ForeignKey('firm.id'), nullable=False)
     remarks = db.Column(db.String(length=255), default='', comment='人员备注')
+
+    order_form_all = db.relationship('OrderForm', lazy='select', backref='person')
 
     def __init__(self, name: str, telephone: str, company_id: int, remarks: str = None):
         self.name = name
@@ -149,13 +165,15 @@ class OrderForm(Common, db.Model):
     __tablename__ = 'order_form'
     id = db.Column(db.Integer, index=True, primary_key=True)
 
+    person_id = db.Column(db.Integer, db.ForeignKey('people.id'), nullable=False, comment='订单目标对象')
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False, comment='产品编号')
     price = db.Column(db.Float(precision=9, decimal_return_scale=2), default=0.0, comment='订单价格')
     quantity = db.Column(db.Float(precision=9, decimal_return_scale=2), default=0.0, comment='订单数量')
     remarks_id = db.Column(db.Integer, db.ForeignKey('order_remarks.id'), nullable=False, comment='订单备注编号')
     unit_id = db.Column(db.SMALLINT, nullable=False, comment='产品单位ID')
 
-    def __init__(self, product_id: int, price: float, quantity: float, remarks_id: int, unit_id: int):
+    def __init__(self, person_id: int, product_id: int, price: float, quantity: float, remarks_id: int, unit_id: int):
+        self.person_id = person_id
         self.product_id = product_id
         self.price = price
         self.quantity = quantity
