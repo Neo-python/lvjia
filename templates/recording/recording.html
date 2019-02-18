@@ -13,7 +13,9 @@
         <div>
             <label for="personnel">联系人
                 <select name="personnel" id="personnel" class="personnel" required>
-                    <option value=""></option>
+                    {% if company.personnel|length != 1 %}
+                        <option value=""></option>
+                    {% endif %}
                     {% for person in company.personnel %}
                         <option value="{{ person.id }}">{{ person.name }}
                         </option>

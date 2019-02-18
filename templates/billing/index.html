@@ -1,1 +1,29 @@
 {% extends 'base.html' %}
+{% block head %}
+
+{% endblock %}
+{% block body %}
+    {% for order in orders %}
+        <div>
+            <input type="checkbox" value="{{ order.id }}">
+            <span>{{ order.firm.name }}</span>
+            <span>{{ order.string_deadline }}</span>
+            <span>{{ order.remarks }}</span>
+            <a href="{{ url_for('billing.invoice_print', order_id=order.id) }}">打印</a>
+            <a href="">编辑订单信息</a>
+            <div>
+                {% for form in order.forms %}
+                    <span>{{ form.person.name }}</span>
+                    <span>{{ form.product.name }}</span>
+                    <span>{{ form.unit.name }}</span>
+                    <span>{{ form.quantity }}</span><br>
+                {% endfor %}
+
+            </div>
+        </div>
+    {% endfor %}
+
+{% endblock %}
+{% block script %}
+
+{% endblock %}

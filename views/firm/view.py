@@ -1,7 +1,7 @@
 from flask import render_template, request, redirect, url_for
 from plugins.common import page_generator
 from views.firm import firm
-from models.common import Firm, People, OrderRemarks
+from models.common import Firm, People, Order
 
 
 @firm.route('/', methods=['GET'])
@@ -32,11 +32,10 @@ def company_index(company_id):
     """公司主页"""
     company = Firm.query.get(company_id)
     page = int(request.args.get('page', 1))
-    remarks = OrderRemarks.query.filter_by(company_id=company_id).order_by(OrderRemarks.id).paginate(page=page,
-                                                                                                     per_page=30)
+    orders = Order.query.filter_by(company_id=company_id).order_by(Order.id).paginate(page=page, per_page=30)
     data = {
-        'remarks_list': remarks.items,
-        'page': page_generator(page, max_num=remarks.pages, url=url_for('firm.company_index', company_id=company_id))
+        'orders': orders.items,
+        'page': page_generator(page, max_num=orders.pages, url=url_for('firm.company_index', company_id=company_id))
     }
     return render_template('firm/firm_index.html', company=company, **data)
 

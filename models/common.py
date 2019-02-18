@@ -58,6 +58,7 @@ class Firm(Common, db.Model):
 
     personnel = db.relationship('People', lazy='select', cascade="all, delete-orphan", backref='firm')
     EP = db.relationship('ExternalPrice', lazy='select', cascade="all, delete-orphan", backref='firm')
+    orders = db.relationship('Order', lazy='select', cascade="all, delete-orphan", backref='firm')
 
     def __init__(self, name: str, address: str):
         self.name = name
@@ -91,8 +92,8 @@ class Product(Common, db.Model):
 
     @property
     def unit_all(self):
-        """可用单位"""
-        return ProductUnit.query.filter(or_(ProductUnit.id == self.unit_id, ProductUnit.product_id == self.id)).all()
+        """可用计量单位"""
+        return ProductUnit.query.filter(or_(ProductUnit.id == self.unit_id, ProductUnit.parent == self.unit_id)).all()
 
     def broadcast(self):
         """新建产品完成后,只允许执行一次.将数据更新每家公司的专价
@@ -111,13 +112,11 @@ class ProductUnit(Common, db.Model):
     name = db.Column(db.String(length=50), nullable=False, comment='产品名')
     multiple = db.Column(db.DECIMAL(precision=9, decimal_return_scale=2), default=1, nullable=False, comment='最小单位的倍数')
     parent = db.Column(db.SMALLINT, default=0, nullable=False, comment='单位等级,0:基础单位,其他:父级单位.')
-    product_id = db.Column(db.Integer, default=0, nullable=False, comment='单位目标,基础单位为0,子单位为产品ID')
 
-    def __init__(self, name: str, multiple: float, parent: int, product_id: int):
+    def __init__(self, name: str, multiple: float, parent: int):
         self.name = name
         self.multiple = multiple
         self.parent = parent
-        self.product_id = product_id
 
     @staticmethod
     def basic_unit():
@@ -171,29 +170,30 @@ class OrderForm(Common, db.Model):
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False, comment='产品编号')
     price = db.Column(db.Float(precision=9, decimal_return_scale=2), default=0.0, comment='订单价格')
     quantity = db.Column(db.Float(precision=9, decimal_return_scale=2), default=0.0, comment='订单数量')
-    remarks_id = db.Column(db.Integer, db.ForeignKey('order_remarks.id'), nullable=False, comment='订单备注编号')
-    unit_id = db.Column(db.SMALLINT, nullable=False, comment='产品单位ID')
+    order_id = db.Column(db.Integer, db.ForeignKey('order.id'), nullable=False, comment='订单备注编号')
+    unit_id = db.Column(db.SMALLINT, db.ForeignKey('product_unit.id'), nullable=False, comment='产品单位ID')
+    unit = db.relationship('ProductUnit', lazy='select')
 
-    def __init__(self, person_id: int, product_id: int, price: float, quantity: float, remarks_id: int, unit_id: int):
+    def __init__(self, person_id: int, product_id: int, price: float, quantity: float, order_id: int, unit_id: int):
         self.person_id = person_id
         self.product_id = product_id
         self.price = price
         self.quantity = quantity
-        self.remarks_id = remarks_id
+        self.order_id = order_id
         self.unit_id = unit_id
 
 
-class OrderRemarks(Common, db.Model):
+class Order(Common, db.Model):
     """订单备注信息模型"""
-    __tablename__ = 'order_remarks'
+    __tablename__ = 'order'
     id = db.Column(db.Integer, index=True, primary_key=True)
 
-    company_id = db.Column(db.Integer, nullable=False, comment='公司编号')
+    company_id = db.Column(db.Integer, db.ForeignKey('firm.id'), nullable=False, comment='公司编号')
     remarks = db.Column(db.String(length=255), default='', nullable=False, comment='订单备注')
     datetime_ = db.Column(db.TIMESTAMP, name='datetime', nullable=False, comment='订单创建日期')
     deadline = db.Column(db.Date, comment='订单期限')
 
-    forms = db.relationship('OrderForm', lazy='select', cascade="all, delete-orphan", backref='remarks')
+    forms = db.relationship('OrderForm', lazy='select', cascade="all, delete-orphan", backref='order')
 
     def __init__(self, company_id: int, remarks: str, deadline=None):
         self.company_id = company_id
@@ -224,3 +224,14 @@ class OrderRemarks(Common, db.Model):
     def string_deadline(self):
         """时间格式化"""
         return f'{self.deadline_to_string}  {self.deadline_to_weekday}'
+
+    def deadline_format(self, fmt: str, week: bool):
+        """期限自定义格式化"""
+        if not self.deadline:
+            return ''
+
+        string = self.deadline.strftime(fmt)
+        if week:
+            return f'{string} {self.deadline_to_weekday}'
+        else:
+            return string

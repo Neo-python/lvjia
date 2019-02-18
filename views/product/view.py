@@ -1,6 +1,6 @@
 from flask import render_template, request, redirect, url_for
 from views.product import product
-from models.common import Product, Firm, ExternalPrice, ProductUnit
+from models.common import Product, Firm, ProductUnit
 from plugins.common import page_generator
 
 
@@ -102,7 +102,7 @@ def unit_new_post():
     """新建单位.表单提交"""
     name = request.form.get('name')
     multiple = request.form.get('multiple')
-    ProductUnit(name=name, multiple=multiple, parent=0, product_id=0).direct_commit_()
+    ProductUnit(name=name, multiple=multiple, parent=0).direct_commit_()
     return redirect(url_for('product.unit_index'))
 
 
@@ -112,12 +112,11 @@ def unit_child(unit_id):
     return render_template('product/unit_child.html', parent=ProductUnit.query.get(unit_id))
 
 
-@product.route('/unit/child/<int:product_id>/', methods=['POST'])
-def unit_child_post(product_id):
+@product.route('/unit/child/<int:unit_id>/', methods=['POST'])
+def unit_child_post(unit_id):
     """设定子单位.表单提交"""
     name = request.form.get('name')
-    multiple = int(request.form.get('multiple'))
-    product_ = Product.query.get(product_id)
+    multiple = float(request.form.get('multiple'))
 
-    ProductUnit(name=name, multiple=multiple, parent=product_.unit_id, product_id=product_id).direct_commit_()
-    return redirect(url_for('product.edit', product_id=product_id))
+    ProductUnit(name=name, multiple=multiple, parent=unit_id).direct_commit_()
+    return redirect(url_for('product.unit_index'))

@@ -1,0 +1,67 @@
+@media print {
+    .print-btn {
+        display: none;
+    }
+
+    .cancel-btn {
+        display: none;
+    }
+}
+
+.print-btn {
+    float: right;
+}
+
+.table-div {
+    padding: 0 5% 0 5%;
+}
+
+.selfInfo-div {
+    padding: 0 5% 0 5%;
+}
+
+.selfInfo-div span {
+    margin: 0 10% 0 0;
+}
+
+.selfInfo-div span span {
+    margin: 0 0 0 2%;
+}
+
+span {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+table thead tr th {
+    text-align: center;
+    vertical-align: middle;
+}
+
+table thead tr th:first-child {
+    width: 10%;
+}
+
+table thead tr th:nth-child(2) {
+    width: 25%;
+}
+
+table thead tr th:nth-child(3) {
+    width: 25%;
+}
+
+table thead tr th:nth-child(4) {
+    width: 10%;
+}
+
+table thead tr th:nth-child(5) {
+    width: 10%;
+}
+
+table thead tr th:nth-child(6) {
+    width: 15%;
+}
+
+input {
+    border: none;
+}
