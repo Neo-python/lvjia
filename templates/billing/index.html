@@ -10,7 +10,6 @@
             <span>{{ order.string_deadline }}</span>
             <span>{{ order.remarks }}</span>
             <a href="{{ url_for('billing.invoice_print', order_id=order.id) }}">打印</a>
-            <a href="">编辑订单信息</a>
             <div>
                 {% for form in order.forms %}
                     <span>{{ form.person.name }}</span>

@@ -33,12 +33,15 @@
                     {% endfor %}
                 </select>
             </label>
-            <label for="price">单价 <input type="number" name="price" id="price" step="0.1" class="price" required>
+            <label for="price" class="small-label">单价
+                <input type="number" name="price" id="price" step="0.1" class="price small-input" required>
                 <span>单位: <span class="unit_span"></span>
                     <input type="text" readonly name="unit" class="unit" hidden>
                 </span>
             </label>
-            <label for="quantity">数量 <input type="number" name="quantity" id="quantity" step="0.1" required></label>
+            <label for="quantity" class="small-label">数量
+                <input type="number" name="quantity" id="quantity" step="0.1" required class="small-input">
+            </label>
             <button class="delete" type="button">删除</button>
         </div>
     </div>

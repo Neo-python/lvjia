@@ -10,11 +10,13 @@ from views.recording import recording
 from views.firm import firm
 from views.product import product
 from views.billing import billing
+from views.clear import clear
 
 app.register_blueprint(recording)
 app.register_blueprint(firm)
 app.register_blueprint(product)
 app.register_blueprint(billing)
+app.register_blueprint(clear)
 
 
 @app.route('/', methods=['GET'])

@@ -172,15 +172,26 @@ class OrderForm(Common, db.Model):
     quantity = db.Column(db.Float(precision=9, decimal_return_scale=2), default=0.0, comment='订单数量')
     order_id = db.Column(db.Integer, db.ForeignKey('order.id'), nullable=False, comment='订单备注编号')
     unit_id = db.Column(db.SMALLINT, db.ForeignKey('product_unit.id'), nullable=False, comment='产品单位ID')
+    real_quantity = db.Column(db.DECIMAL(9, 2), nullable=False, comment='实际发货数量')
+
     unit = db.relationship('ProductUnit', lazy='select')
 
-    def __init__(self, person_id: int, product_id: int, price: float, quantity: float, order_id: int, unit_id: int):
+    def __init__(self, person_id: int, product_id: int, price: float, quantity: float, order_id: int, unit_id: int,
+                 real_quantity: float = None):
         self.person_id = person_id
         self.product_id = product_id
         self.price = price
         self.quantity = quantity
         self.order_id = order_id
         self.unit_id = unit_id
+        self.real_quantity = self._init_real_quantity(real_quantity)
+
+    def _init_real_quantity(self, quantity):
+        """实际数量初始化设定"""
+        if quantity is None:
+            return self.quantity
+        else:
+            return quantity
 
 
 class Order(Common, db.Model):
