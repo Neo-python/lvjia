@@ -13,11 +13,18 @@
 }
 
 .table-div {
-    padding: 0 5% 0 5%;
+    padding-top: 10%;
+    padding-left: 10%;
+    padding-right: 13%;
+}
+
+.table-div div {
+    display: flex !important;
 }
 
 .selfInfo-div {
-    padding: 0 5% 0 5%;
+    padding: 17% 0 0 55%;
+    margin: 0;
 }
 
 .selfInfo-div span {
@@ -33,32 +40,27 @@ span {
     font-weight: bold;
 }
 
-table thead tr th {
-    text-align: center;
-    vertical-align: middle;
+.billing-row div {
+    margin-bottom: 2.4%;
 }
 
-table thead tr th:first-child {
+.billing-row div:first-child {
+    width: 30%;
+}
+
+.billing-row div:nth-child(2) {
+    width: 30%;
+}
+
+.billing-row div:nth-child(3) {
+    width: 15%;
+}
+
+.billing-row div:nth-child(4) {
     width: 10%;
 }
 
-table thead tr th:nth-child(2) {
-    width: 25%;
-}
-
-table thead tr th:nth-child(3) {
-    width: 25%;
-}
-
-table thead tr th:nth-child(4) {
-    width: 10%;
-}
-
-table thead tr th:nth-child(5) {
-    width: 10%;
-}
-
-table thead tr th:nth-child(6) {
+.billing-row div:nth-child(5) {
     width: 15%;
 }
 

@@ -1,46 +1,77 @@
 <link rel="stylesheet" href="/static/css/bootstrap.min.css">
 <link rel="stylesheet" href="/static/css/invoice_common.css">
+<style>
+    table {
+        border: none !important;
+        border-collapse: separate;
+        border-spacing: 10px;
+    }
+
+    table tbody {
+        border: none !important;
+    }
+
+    table tbody tr {
+        border: none !important;
+
+    }
+
+    table tbody tr td {
+        border: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    .table-div {
+        padding-top: 13%;
+        padding-left: 14%;
+        padding-right: 10%;
+    }
+</style>
 <button onclick="history.back(-1)" class="cancel-btn">取消/返回</button>
 <button onclick="window.print()" class="print-btn">打印</button>
-<h2 align="center">{{ order.firm.name }} &nbsp;&nbsp;&nbsp;&nbsp;NO:{{ order.id }}</h2>
 <div>
-    <h1 align="center">食品原料配送统计表</h1>
     <div class="selfInfo-div">
-        <span>供应商: <span>卢斌林</span></span><span>类别: <span>油炸类</span></span><span>{{ order.deadline_format('%Y年 %m月 %d日',True) }}</span><br>
-        <span>联系方式: <span>13106464571</span></span>
+        {{ order.deadline_format('%Y年 %m月 %d日',True) }}
     </div>
     <div class="table-div">
-        <table class="table table-bordered">
-            <thead>
-            <tr>
-                <th>序号</th>
-                <th><input type="text" value="校名"></th>
-                <th>品种</th>
-                <th>数量</th>
-                <th>单价</th>
-                <th>总计(元)</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for form in order.forms %}
-                <tr>
-                    <td>{{ loop.index }}</td>
-                    <td>{{ form.person.name }}</td>
-                    <td>{{ form.product.name }}</td>
-                    <td>{{ form.quantity }} {{ form.unit.name }}</td>
-                    <td>{{ form.price }}</td>
-                    <td>{{ (form.price* form.quantity)|round(2) }}</td>
-                </tr>
-            {% endfor %}
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>{{ price_sum }}</td>
-            </tr>
-            </tbody>
-        </table>
+        {#        <table class="table" style="border-collapse:separate; border-spacing:0px 10px;">#}
+        {#            <tbody>#}
+        {#            {% for form in order.forms %}#}
+        {#                <tr>#}
+        {#                    <td>{{ form.person.name }}</td>#}
+        {#                    <td>{{ form.product.name }}</td>#}
+        {#                    <td>{{ form.quantity }} {{ form.unit.name }}</td>#}
+        {#                    <td>{{ form.price }}</td>#}
+        {#                    <td>{{ (form.price* form.quantity)|round(2) }}</td>#}
+        {#                </tr>#}
+        {#            {% endfor %}#}
+        {#            <tr>#}
+        {#                <td></td>#}
+        {#                <td></td>#}
+        {#                <td></td>#}
+        {#                <td></td>#}
+        {#                <td>{{ price_sum }}</td>#}
+        {#            </tr>#}
+        {#            </tbody>#}
+        {#        </table>#}
+        {% for form in order.forms %}
+            <div class="billing-row">
+                <div>{{ form.person.name }}</div>
+                <div>{{ form.product.name }}</div>
+                <div>{{ form.quantity }} {{ form.unit.name }}</div>
+                <div>{{ form.price }}</div>
+                <div>{{ (form.price* form.quantity)|round(2) }}</div>
+            </div>
+        {% endfor %}
+        <div class="billing-row">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div>{{ price_sum }}</div>
+        </div>
+
+
     </div>
 </div>
