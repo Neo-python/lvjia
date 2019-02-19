@@ -29,7 +29,7 @@
                     <td>{{ form.product.name }}</td>
                     <td>{{ form.quantity }} {{ form.unit.name }}</td>
                     <td>{{ form.price }}</td>
-                    <td>{{ form.price* form.quantity }}</td>
+                    <td>{{ (form.price* form.quantity)|round(2) }}</td>
                 </tr>
             {% endfor %}
             <tr>

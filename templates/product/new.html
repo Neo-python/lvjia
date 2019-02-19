@@ -8,7 +8,7 @@
                 <option value="{{ unit.id }}">{{ unit.name }}</option>
             {% endfor %}
         </select></label>
-        <label for="price">单价<input type="number" id="price" name="price" step="0.1" required></label>
+        <label for="price">单价<input type="number" id="price" name="price" step="0.01" required></label>
         <button>保存</button>
     </form>
 {% endblock %}

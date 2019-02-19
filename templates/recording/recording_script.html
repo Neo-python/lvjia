@@ -1,0 +1,60 @@
+<script type="text/javascript" src="/static/js/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js"></script>
+<script type="text/javascript">
+    $(".form_datetime").datetimepicker({
+        format: 'yyyy-mm-dd hh:mm',
+        language: 'cn',
+        todayBtn: 'linked'
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        function add_input() {
+            var template = $('#template');
+            var input = $('#input');
+            input.append(template.html())
+        }
+
+        for (var i = 0; i < {{ add }}; i++) {
+            add_input()
+        }
+        // 初始化结束
+        $('#add_input').on('click', function () {
+            //添加按钮触发一次增加输入条
+            add_input()
+        });
+
+        $('.product').live('change', function () {
+            // 选中产品发生改变触发,修改对应位置价格值,然后激活数量输入框
+            var price = $(this).find("option:selected").attr('data-price');
+            var unit_id = $(this).find("option:selected").attr('data-unit_id');
+            var unit_name = $(this).find("option:selected").attr('data-unit_name');
+            var parents = $(this).parent().siblings();
+            var unit_input = parents.find('.unit');
+            var unit_span = parents.find('.unit_span');
+            var price_input = parents.find('.price');
+            var quantity_input = parents.find('#quantity');
+            price_input.attr('value', price); // 变更选中项价格
+            quantity_input.focus(); // 激活数量输入框
+            unit_input.attr('value', unit_id); // 设置单位
+            unit_span.html(unit_name) // 设置单位
+
+        });
+
+        $('.delete').live('click', function () {
+            // 删除一行
+            var div = $(this).parent();
+            div.remove();
+        });
+        $('.edit-delete').on('click', function () {
+            var href = $(this).attr('data-href');
+            $.ajax({
+                url: href,
+                success: function (items) {
+                    if (items.statusCode === 200) {
+                        window.location = location;
+                    }
+                }
+            })
+        })
+    });
+</script>

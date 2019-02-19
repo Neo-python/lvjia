@@ -54,7 +54,7 @@
                 <td>{{ order.id }}</td>
                 <td>{{ order.string_deadline }}</td>
                 <td>{{ order.remarks }}</td>
-                <td>操作 <a href="">打印</a> <a href="{{ url_for('clear.order_edit', order_id=order.id) }}">编辑订单信息</a>
+                <td>操作 <a href="">打印</a> <a href="{{ url_for('recording.order_edit', order_id=order.id) }}">编辑订单信息</a>
                 </td>
             </tr>
         {% endfor %}

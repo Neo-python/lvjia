@@ -39,6 +39,11 @@ class Common(object):
         db.session.delete(self)
         db.session.commit()
 
+    @staticmethod
+    def static_commit_():
+        """直接提交.目的是尽量少直接引入db对象,集成在模型内"""
+        db.session.commit()
+
     def __str__(self):
         return f'<class \'{self.__class__.__name__}\' id={self.id if self.id else None}>'
 
