@@ -83,7 +83,7 @@ class Product(Common, db.Model):
     id = db.Column(db.Integer, index=True, primary_key=True)
 
     name = db.Column(db.String(length=50), nullable=False, comment='产品名')
-    price = db.Column(db.Float(precision=9, decimal_return_scale=2), default=0.00, nullable=False, comment='产品单价')
+    price = db.Column(db.DECIMAL(precision=9, decimal_return_scale=2), default=0.00, nullable=False, comment='产品单价')
     unit_id = db.Column(db.SMALLINT, db.ForeignKey('product_unit.id'), nullable=False, comment='产品单位ID')
 
     EPS = db.relationship('ExternalPrice', lazy='select', cascade="all, delete-orphan", backref='product')
@@ -98,7 +98,8 @@ class Product(Common, db.Model):
     @property
     def unit_all(self):
         """可用计量单位"""
-        return ProductUnit.query.filter(or_(ProductUnit.id == self.unit_id, ProductUnit.parent == self.unit_id)).all()
+        return ProductUnit.query.filter(
+            or_(ProductUnit.id == self.unit_id, ProductUnit.parent_id == self.unit_id)).all()
 
     def broadcast(self):
         """新建产品完成后,只允许执行一次.将数据更新每家公司的专价
@@ -116,17 +117,35 @@ class ProductUnit(Common, db.Model):
 
     name = db.Column(db.String(length=50), nullable=False, comment='产品名')
     multiple = db.Column(db.DECIMAL(precision=9, decimal_return_scale=2), default=1, nullable=False, comment='最小单位的倍数')
-    parent = db.Column(db.SMALLINT, default=0, nullable=False, comment='单位等级,0:基础单位,其他:父级单位.')
+    parent_id = db.Column(db.SMALLINT, default=0, nullable=False, comment='单位等级,0:基础单位,其他:父级单位.')
 
-    def __init__(self, name: str, multiple: float, parent: int):
+    def __init__(self, name: str, multiple: float, parent_id: int):
         self.name = name
         self.multiple = multiple
-        self.parent = parent
+        self.parent_id = parent_id
 
     @staticmethod
     def basic_unit():
         """返回基础单位"""
-        return ProductUnit.query.filter(ProductUnit.parent == 0).all()
+        return ProductUnit.query.filter(ProductUnit.parent_id == 0).all()
+
+    @property
+    def parent(self):
+        """上级对象"""
+        if getattr(self, '_parent', None) or self.parent_id is not 0:
+            #  查询到上级对象时,缓存上级对象
+            self._parent = ProductUnit.query.get(self.parent_id)
+            return self._parent
+        else:
+            return None
+
+    @property
+    def parent_unit(self):
+        """父级单位"""
+        if self.parent:
+            return self.parent
+        else:
+            return self
 
 
 class People(Common, db.Model):
@@ -155,7 +174,7 @@ class ExternalPrice(Common, db.Model):
 
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
     company_id = db.Column(db.Integer, db.ForeignKey('firm.id'), nullable=False)
-    price = db.Column(db.Float(precision=9, decimal_return_scale=2), default=0.00, nullable=False, comment='产品单价')
+    price = db.Column(db.DECIMAL(precision=9, decimal_return_scale=2), default=0.00, nullable=False, comment='产品单价')
     unit_id = db.Column(db.SMALLINT, db.ForeignKey('product_unit.id'), nullable=False, comment='产品单位ID')
     unit = db.relationship('ProductUnit', lazy='select')
 
@@ -173,8 +192,8 @@ class OrderForm(Common, db.Model):
 
     person_id = db.Column(db.Integer, db.ForeignKey('people.id'), nullable=False, comment='订单目标对象')
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False, comment='产品编号')
-    price = db.Column(db.Float(precision=9, decimal_return_scale=2), default=0.0, comment='订单价格')
-    quantity = db.Column(db.Float(precision=9, decimal_return_scale=2), default=0.0, comment='订单数量')
+    price = db.Column(db.DECIMAL(precision=9, decimal_return_scale=2), default=0.0, comment='订单价格')
+    quantity = db.Column(db.DECIMAL(precision=9, decimal_return_scale=2), default=0.0, comment='订单数量')
     order_id = db.Column(db.Integer, db.ForeignKey('order.id'), nullable=False, comment='订单备注编号')
     unit_id = db.Column(db.SMALLINT, db.ForeignKey('product_unit.id'), nullable=False, comment='产品单位ID')
     real_quantity = db.Column(db.DECIMAL(9, 2), nullable=False, comment='实际发货数量')
@@ -193,7 +212,11 @@ class OrderForm(Common, db.Model):
 
     def _init_real_quantity(self, quantity):
         """实际数量初始化设定"""
-        if quantity is None:
+        try:
+            quantity = float(quantity)
+        except TypeError:
+            return self.quantity
+        except ValueError:
             return self.quantity
         else:
             return quantity
@@ -244,7 +267,7 @@ class Order(Common, db.Model):
     def deadline_format(self, fmt: str, week: bool):
         """期限自定义格式化"""
         if not self.deadline:
-            return ''
+            return self.datetime_.strftime(fmt)
 
         string = self.deadline.strftime(fmt)
         if week:

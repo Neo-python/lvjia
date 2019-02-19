@@ -102,7 +102,7 @@ def unit_new_post():
     """新建单位.表单提交"""
     name = request.form.get('name')
     multiple = request.form.get('multiple')
-    ProductUnit(name=name, multiple=multiple, parent=0).direct_commit_()
+    ProductUnit(name=name, multiple=multiple, parent_id=0).direct_commit_()
     return redirect(url_for('product.unit_index'))
 
 
@@ -118,5 +118,5 @@ def unit_child_post(unit_id):
     name = request.form.get('name')
     multiple = float(request.form.get('multiple'))
 
-    ProductUnit(name=name, multiple=multiple, parent=unit_id).direct_commit_()
+    ProductUnit(name=name, multiple=multiple, parent_id=unit_id).direct_commit_()
     return redirect(url_for('product.unit_index'))

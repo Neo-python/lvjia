@@ -1,5 +1,6 @@
 """全局通用插件库"""
 import datetime
+from collections import Iterable
 from flask import render_template
 
 
@@ -54,3 +55,40 @@ class OrmVerity:
             return result
         else:
             return value
+
+
+class OrdersInfo:
+    """订单信息集合"""
+
+    def __init__(self, orders: list):
+        self.orders = orders if isinstance(orders, Iterable) else [orders]
+        self.form_info = dict()
+
+    def collect_quantity(self) -> dict:
+        """计算多个订单产品数量"""
+        for order in self.orders:
+            self.forms(order=order)
+        return self.form_info
+
+    def forms(self, order):
+        """订单抽取单条表单"""
+        for form in order.forms:
+            self.update(form=form)
+
+    def update(self, form):
+        """更新数据"""
+        if self.form_info.get(form.product.name):
+            """已有记录的产品"""
+            # 订单记录数加上 --> 订单数量乘以订单所用单位倍数
+            self.form_info[form.product.name]['quantity'] += form.quantity * form.unit.multiple
+        else:
+            # 没有记录的产品
+            self.form_info[form.product.name] = {
+                'unit': form.unit.parent.name,
+                'quantity': form.quantity * form.unit.multiple  # 订单数量乘以订单所用单位倍数
+            }
+
+
+def orders_info(orders: list) -> dict:
+    """jinja模板函数"""
+    return OrdersInfo(orders=orders).collect_quantity()

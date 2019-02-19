@@ -18,6 +18,10 @@ app.register_blueprint(product)
 app.register_blueprint(billing)
 app.register_blueprint(clear)
 
+from plugins.common import orders_info
+
+app.add_template_global(orders_info, 'orders_info')
+
 
 @app.route('/', methods=['GET'])
 def index():

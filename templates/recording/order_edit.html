@@ -53,7 +53,7 @@
         <h1>{{ order.firm.name }}</h1>
         <button>提交</button>
         <label for="deadline">完成时间<input size="16" type="text" readonly class="form_datetime" name="deadline"
-                                         value="{{ order.deadline }}"></label>
+                                         value="{{ order.deadline_to_string }}"></label>
         <label for="remarks">订单备注信息<textarea name="remarks" id="" cols="30"
                                              rows="10">{{ order.remarks }}</textarea></label>
         <div id="input">
