@@ -8,8 +8,8 @@ from models.common import Firm, People, Order
 @Permission.need_login()
 def index():
     """主页,列表页"""
-    companies = Firm.query.all()
-    return render_template('firm/index.html', companies=companies)
+    firms = Firm.query.all()
+    return render_template('firm/index.html', firms=firms)
 
 
 @firm.route('/new/', methods=['GET'])
@@ -106,3 +106,16 @@ def people_delete(people_id):
     """人员删除"""
     people = People.query.get(people_id).direct_delete_()
     return redirect(url_for('firm.company_index', company_id=people.company_id))
+
+
+@firm.route('/<int:company_id>/order_list/', methods=['GET'])
+def order_list(company_id):
+    """公司订单列表"""
+    page = int(request.args.get('page', 1))
+    orders = Order.query.filter_by(company_id=company_id).order_by(Order.id).paginate(page=page, per_page=10)
+    data = {
+        'company_id': company_id,
+        'orders': orders.items,
+        'page': page_generator(page, max_num=orders.pages, url=url_for('firm.order_list', company_id=company_id))
+    }
+    return render_template('firm/order_list.html', **data)

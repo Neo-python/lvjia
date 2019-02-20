@@ -1,66 +1,80 @@
 {% extends 'base.html' %}
 {% block body %}
-    <table>
-        <thead>
-        <tr>
-            <th>公司/单位名</th>
-            <th>地址</th>
-            <th>操作</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>{{ company.name }}</td>
-            <td>{{ company.address }}</td>
-            <td>操作 <a href="{{ url_for('firm.company_edit', company_id=company.id) }}">编辑</a></td>
-        </tr>
-        </tbody>
-    </table>
-    <a href="{{ url_for('firm.people_new', company_id=company.id) }}">新建联系人</a>
-    <a href="{{ url_for('product.fixed_price', company_id=company.id) }}">产品定价</a>
-    <table>
-        <thead>
-        <tr>
-            <th>姓名</th>
-            <th>联系电话</th>
-            <th>备注信息</th>
-            <th>操作</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for people in company.personnel %}
-            <tr>
-                <td>{{ people.name }}</td>
-                <td>{{ people.telephone }}</td>
-                <td>{{ people.remarks }}</td>
-                <td>操作 <a href="{{ url_for('firm.people_edit', people_id=people.id) }}">编辑</a></td>
-            </tr>
-        {% endfor %}
+    <div class="col-md-12">
+        <section class="panel post-wrap pro-box team-member">
+            <aside class="bg-primary v-align">
+                <div class="panel-body text-center">
+                    <div class="team-member-wrap">
+                        <div class="team-member-info">
+                            <div class="action-set">
+                                <h2>{{ company.name }}</h2>
+                            </div>
+                            <div class="team-title">
+                                <a href="{{ url_for('firm.company_edit', company_id=company.id) }}"
+                                   class="btn  btn-block addon-btn m-b-10 btn-warning">
+                                    <i class="fa fa-pencil-square-o"></i>
+                                    编辑公司信息
+                                </a>
+                                <a href="{{ url_for('firm.order_list', company_id=company.id) }}"
+                                   class="btn btn-default btn-block addon-btn m-b-10 color-black firm-a">
+                                    <i class="fa fa-jpy"></i>
+                                    订单列表
+                                </a>
+                                <a class="btn btn-danger btn-block addon-btn m-b-10">
+                                    <i class="fa fa-jpy"></i>
+                                    产品定价
+                                </a>
+                                <a class="btn btn-info btn-block addon-btn m-b-10">
+                                    <i class="fa fa-jpy"></i>
+                                    订单核对
+                                </a>
+                            </div>
 
-        </tbody>
-    </table>
-    <table>
-        <thead>
-        <tr>
-            <th>订单编号</th>
-            <th>订单时间</th>
-            <th>订单信息</th>
-            <th>操作</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for order in orders %}
-            <tr>
-                <td>{{ order.id }}</td>
-                <td>{{ order.string_deadline }}</td>
-                <td>{{ order.remarks }}</td>
-                <td>操作 <a href="">打印</a> <a href="{{ url_for('recording.order_edit', order_id=order.id) }}">编辑订单信息</a>
-                </td>
-            </tr>
-        {% endfor %}
+                            <div class="call-info">
+                                {#                               左侧中间#}
+                            </div>
+                            <div class="status">
+                                <h6>{{ company.address }}</h6>
 
-        </tbody>
-    </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+            <aside>
+                <header class="panel-heading head-border">
+                    联系人
+                    <span class="action-tools pull-right">
+                                    <a class="fa fa-reorder" href="javascript:;"></a>
+                                </span>
+                </header>
+                <div class="post-info">
+                    <ul class="team-list cycle-pager external" id="no-template-pager">
+                        {% for people in company.personnel %}
+                            <li>
+                                <a href="{{ url_for('firm.people_edit', people_id=people.id) }}">
+                                            <span class="thumb-small">
+                                                <img class="circle" src="/static/img/img2.jpg" alt="">
+                                                <i class="online dot"></i>
+                                            </span>
+                                    <span class="name">{{ people.name }}</span>
+                                    <span class="name">{{ people.telephone }}</span>
+                                    <span class="name">{{ people.remarks }}</span>
+                                </a>
+                            </li>
+                        {% endfor %}
+
+                    </ul>
+                    <div class="add-more-member">
+                        <a href="javascript:;" class=" ">&nbsp;</a>
+                        <a href="{{ url_for('firm.people_new', company_id=company.id) }}" class="add-btn pull-right">
+                            新增联系人
+                        </a>
+                    </div>
+                </div>
+            </aside>
+        </section>
+    </div>
 {% endblock %}
 {% block script %}
 

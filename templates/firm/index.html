@@ -1,25 +1,21 @@
 {% extends 'base.html' %}
 {% block body %}
-    <a href="{{ url_for('firm.new') }}">新增 公司/单位</a>
-    <table>
-        <thead>
-        <tr>
-            <th>公司/单位名</th>
-            <th>地址</th>
-            <th>操作</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for company in companies %}
-            <tr>
-                <td>{{ company.name }}</td>
-                <td>{{ company.address }}</td>
-                <td><a href="{{ url_for('recording.recording_page', company_id=company.id) }}">录单</a> <a
-                        href="{{ url_for('firm.company_index', company_id=company.id) }}">详情</a></td>
-            </tr>
+    <a href="{{ url_for('firm.new') }}" class="btn btn-success firm"><i class="fa fa-plus"></i> 新增 公司/单位</a>
+    <div class="row state-overview">
+        {% for company in firms %}
+            <a class="col-lg-3 col-sm-6 company-div" href="{{ url_for('firm.company_index', company_id=company.id) }}">
+                <section class="panel green">
+                    <div class="symbol ">
+                        <i class="fa fa-university"></i>
+                    </div>
+                    <div class="value white">
+                        <h3>{{ company.name }}</h3>
+                        <h6>{{ company.address }}</h6>
+                    </div>
+                </section>
+            </a>
         {% endfor %}
-        </tbody>
-    </table>
+    </div>
 {% endblock %}
 {% block script %}
 

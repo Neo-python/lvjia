@@ -1,10 +1,40 @@
 {% extends 'base.html' %}
 {% block body %}
-    <form action="{{ url_for('firm.people_new_post') }}" method="post">
-        <input type="text" name="company_id" value="{{ company_id }}" hidden>
-        <label for="name">姓名<input type="text" name="name" id="name"></label>
-        <label for="telephone">联系方式<input type="text" name="telephone" id="telephone"></label>
-        <label for="remarks">备注信息<input type="text" name="remarks" id="remarks"></label>
-        <button>保存</button>
-    </form>
+    <div class="col-lg-6">
+        <section class="panel">
+            <header class="panel-heading">
+                新增公司/单位
+            </header>
+            <div class="panel-body">
+                <form role="form" action="{{ url_for('firm.people_new_post') }}" method="post">
+                    <input type="text" name="company_id" value="{{ company_id }}" hidden>
+                    <div class="form-group">
+                        <label>姓名</label>
+                        <div class="iconic-input">
+                            <i class="fa fa-child"></i>
+                            <input type="text" class="form-control" placeholder="姓名" name="name">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>联系方式</label>
+                        <div class="iconic-input">
+                            <i class="fa fa-phone"></i>
+                            <input type="text" class="form-control" placeholder="联系方式" name="telephone">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-2 col-sm-2 control-label">备注信息</label>
+                        <div class="col-lg-10">
+                            <textarea class="wishContent form-control" placeholder="请输入不超过15个字" maxlength="15"
+                                      id="remarks" name="remarks"></textarea>
+                            <span class="wordsNum">0/15</span>
+                            {#                            <textarea name="remarks" class="form-control" id="remarks" cols="30" rows="10"></textarea>#}
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success firm-new"><i class="fa fa-plus"></i> 新增 联系人</button>
+                </form>
+
+            </div>
+        </section>
+    </div>
 {% endblock %}

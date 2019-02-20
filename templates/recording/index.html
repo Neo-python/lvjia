@@ -1,1 +1,25 @@
 {% extends 'base.html' %}
+{% block head %}
+
+{% endblock %}
+{% block body %}
+    <div class="row state-overview">
+        {% for company in firms %}
+            <a class="col-lg-3 col-sm-6 company-div" href="{{ url_for('recording.recording_page', company_id=company.id) }}">
+                <section class="panel green">
+                    <div class="symbol ">
+                        <i class="fa fa-university"></i>
+                    </div>
+                    <div class="value white">
+                        <h3>{{ company.name }}</h3>
+                        <h6>{{ company.address }}</h6>
+                    </div>
+                </section>
+            </a>
+        {% endfor %}
+
+    </div>
+
+{% endblock %}
+{% block script %}
+{% endblock %}

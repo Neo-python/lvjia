@@ -75,6 +75,7 @@
                 </li>
                 <li class="active"><a href="{{ url_for('index') }}"><i class="fa fa-home"></i> <span>首页</span></a></li>
                 <li class="menu-list">
+                <li><a href="{{ url_for('recording.index') }}"><i class="fa fa-book"></i> 录单</a></li>
                 <li><a href="{{ url_for('firm.index') }}"><i class="fa fa-book"></i> 公司</a></li>
                 <li><a href="{{ url_for('product.index') }}"><i class="fa fa-cogs"></i> 产品</a></li>
                 <li><a href="{{ url_for('product.unit_index') }}"><i class="fa fa-cogs"></i> 计量单位</a></li>
@@ -153,7 +154,7 @@
                 <li>
                     <a href="{{ url_for('admin.logout') }}"><i class="fa fa-file-text"></i> <span>退出登录</span></a>
                 </li>
-
+                </li>
             </ul>
             <!--sidebar nav end-->
 
@@ -179,16 +180,17 @@
                 </div>
             </div>
         {% endif %}
-        {% block body %}
+        <div class="wrapper">
+            {% block body %}
 
-        {% endblock %}
-
+            {% endblock %}
+        </div>
         <!--footer section start-->
         <footer>
-            2019 &copy; <a href="https://github.com/Neo-python/lvjia">https://github.com/Neo-python/lvjia</a>
+            2019 &copy; <a href="https://github.com/Neo-python/lvjia"><i class="fa fa-github"></i>
+            https://github.com/Neo-python/lvjia</a>
         </footer>
         <!--footer section end-->
-
 
         <!-- Right Slidebar start -->
         <!-- Right Slidebar end -->
@@ -261,6 +263,7 @@
 <!--common scripts for all pages-->
 
 <script src="/static/js/scripts.js"></script>
+<script src="/static/js/neo.js"></script>
 
 
 <script type="text/javascript">

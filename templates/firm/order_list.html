@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block head %}
+
+{% endblock %}
+{% block body %}
+    <div class="col-md-12">
+        <a href="{{ url_for('firm.company_index', company_id=company_id) }}">回到公司主页</a>
+        <div class="row">
+            <div class="col-lg-12">
+                <section class="panel">
+                    <header class="panel-heading head-border">
+                        订单列表
+                    </header>
+                    <table class="table table-striped custom-table table-hover">
+                        <thead>
+                        <tr>
+                            <th><i class="fa fa-bookmark-o"></i> 时间</th>
+                            <th class="hidden-xs"><i class="fa fa-building-o"></i> 订单内容</th>
+                            <th><i class="fa fa-bar-chart-o"></i> 备注信息</th>
+                            <th class="hidden-xs"><i class="fa fa-cogs"></i> 操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for order in orders %}
+                            <tr>
+                                <td>{{ order.deadline_format('%m-%d', False) }}</td>
+                                <td>{{ orders_info(order)|join(' | ') }}
+                                    <br>{{ order.peoples_info().keys()|join(' | ') }}</td>
+                                <td>{{ order.remarks }}</td>
+                                <td>
+                                    <a href="{{ url_for('recording.order_edit', order_id=order.id) }}"
+                                       class="btn btn-success btn-xs"><i class="fa fa-edit"></i></a>
+                                    <a class="btn btn-primary btn-xs"><i class="fa fa-print"></i></a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </section>
+            </div>
+        </div>
+        {{ page|safe }}
+    </div>
+{% endblock %}
+{% block script %}
+
+{% endblock %}

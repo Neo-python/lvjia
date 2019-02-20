@@ -9,6 +9,7 @@ from plugins.common import Permission
 @Permission.need_login()
 def index():
     """首页"""
+    return render_template('recording/index.html', firms=Firm.query.all())
 
 
 @recording.route('/<int:company_id>/', methods=['GET'])

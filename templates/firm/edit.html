@@ -1,10 +1,34 @@
 {% extends 'base.html' %}
 {% block body %}
-    <form action="" , method="post">
-        <label for="name">名称<input type="text" id="name" name="name" value="{{ company.name }}"></label>
-        <label for="address">名称<input type="text" id="address" name="address" value="{{ company.address }}"></label>
-        <button>提交修改</button>
-    </form>
+    <div class="col-lg-6">
+        <section class="panel">
+            <header class="panel-heading">
+                新增公司/单位
+            </header>
+            <div class="panel-body">
+                <form role="form" action="" method="post">
+                    <div class="form-group">
+                        <label>公司/单位名</label>
+                        <div class="iconic-input">
+                            <i class="fa fa-university"></i>
+                            <input type="text" class="form-control" placeholder="公司/单位名" name="name"
+                                   value="{{ company.name }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>公司/单位地址</label>
+                        <div class="iconic-input">
+                            <i class="fa fa-car"></i>
+                            <input type="text" class="form-control" placeholder="公司/单位地址" name="address"
+                                   value="{{ company.address }}">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success firm-new"><i class="fa fa-plus"></i> 保存</button>
+                </form>
+
+            </div>
+        </section>
+    </div>
 {% endblock %}
 {% block script %}
 

@@ -190,6 +190,13 @@ class Order(Common, db.Model):
         self.remarks = OrmVerity.verify_null_value(value=remarks, result=None)
         self.deadline = OrmVerity.verify_deadline(deadline=deadline)
 
+    def peoples_info(self):
+        """获取订单联系人集合"""
+        result = dict()
+        for form in self.forms:
+            result[form.person.name] = {'telephone': form.person.telephone, 'remarks': form.person.remarks}
+        return result
+
     @property
     def deadline_to_string(self):
         """期限字符串格式化"""
