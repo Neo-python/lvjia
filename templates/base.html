@@ -7,7 +7,6 @@
     <meta name="keyword"
           content="slick, flat, dashboard, bootstrap, admin, template, theme, responsive, fluid, retina"/>
     <meta name="description" content=""/>
-    <link rel="shortcut icon" href="javascript:;" type="/static/favicon.ico">
 
     <title>绿佳数据管理系统</title>
 
@@ -37,6 +36,7 @@
     <link href="/static/css/style.css" rel="stylesheet">
     <link href="/static/css/style-responsive.css" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/neo.css">
+    <link rel="shortcut icon" href="/static/img/ico/favicon.ico"/>
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -56,7 +56,7 @@
         <!--responsive view logo start-->
         <div class="logo dark-logo-bg visible-xs-* visible-sm-*">
             <a href="{{ url_for('index') }}">
-                <img src="/static/img/logo-icon.png" alt="">
+                <img src="/static/img/logo.png" alt="">
                 <!--<i class="fa fa-maxcdn"></i>-->
                 <span class="brand-name">绿佳</span>
             </a>
@@ -150,17 +150,8 @@
                     </ul>
                 </li>
 
-                <li class="menu-list"><a href=""><i class="fa fa-file-text"></i> <span>Extra Pages</span></a>
-                    <ul class="child-list">
-                        <li><a href="profile.html"> Profile</a></li>
-                        <li><a href="invoice.html"> Invoice</a></li>
-                        <li><a href="login.html"> Login </a></li>
-                        <li><a href="registration.html"> Registration </a></li>
-                        <li><a href="lock.html"> Lock Screen </a></li>
-                        <li><a href="404.html"> 404 Error</a></li>
-                        <li><a href="500.html"> 500 Error</a></li>
-
-                    </ul>
+                <li>
+                    <a href="{{ url_for('admin.logout') }}"><i class="fa fa-file-text"></i> <span>退出登录</span></a>
                 </li>
 
             </ul>
@@ -172,6 +163,22 @@
         </div>
     </div>
     <div class="body-content">
+        {% if get_flashed_messages(['error']) %}
+            <div class="message-box-wrapper">
+                <div class="message-box">
+                    <div class="message-box-header"></div>
+                    <div class="message-box-content">
+                        {% for get_flashed_message in get_flashed_messages(['error']) %}
+                            {{ get_flashed_message[1] }}
+                        {% endfor %}
+                    </div>
+                    <div class="message-box-btns">
+                        {#                    <div class="message-box-cancel">取消</div>#}
+                        <div class="message-box-confirm">确定</div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
         {% block body %}
 
         {% endblock %}
@@ -263,6 +270,9 @@
         //countTo
 
         $('.timer').countTo();
+        $('.message-box-confirm').click(function () {
+            $('.message-box-wrapper').remove();
+        })
 
     });
 

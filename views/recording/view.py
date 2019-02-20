@@ -2,14 +2,17 @@ import datetime
 from flask import render_template, request, redirect, url_for, jsonify
 from views.recording import recording
 from models.common import Firm, Order, OrderForm
+from plugins.common import Permission
 
 
-@recording.route('/index/', )
+@recording.route('/index/', methods=['GET'])
+@Permission.need_login()
 def index():
     """首页"""
 
 
 @recording.route('/<int:company_id>/', methods=['GET'])
+@Permission.need_login()
 def recording_page(company_id):
     """录单页"""
     now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M')
@@ -17,6 +20,7 @@ def recording_page(company_id):
 
 
 @recording.route('/<int:company_id>/', methods=['POST'])
+@Permission.need_login()
 def recording_post(company_id):
     """录单.表单提交"""
     # 创建订单备注信息
@@ -40,6 +44,7 @@ def recording_post(company_id):
 
 
 @recording.route('/edit/<int:order_id>/', methods=['GET'])
+@Permission.need_login()
 def order_edit(order_id):
     """订单修改"""
     order = Order.query.get(order_id)
@@ -47,6 +52,7 @@ def order_edit(order_id):
 
 
 @recording.route('/edit/<int:order_id>/', methods=['POST'])
+@Permission.need_login()
 def order_edit_post(order_id):
     """订单修改.表单提交
     更新order信息
@@ -92,6 +98,7 @@ def order_edit_post(order_id):
 
 
 @recording.route('/form/<int:form_id>/delete/', methods=['GET'])
+@Permission.need_login()
 def form_delete(form_id):
     """删除订单"""
     OrderForm.query.get(form_id).direct_delete_()

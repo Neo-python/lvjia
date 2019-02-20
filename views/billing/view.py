@@ -1,9 +1,11 @@
 from flask import render_template
 from views.billing import billing
 from models.common import Order
+from plugins.common import Permission
 
 
 @billing.route('/', methods=['GET'])
+@Permission.need_login()
 def index():
     """出单页面"""
     orders = Order.query.all()
@@ -11,6 +13,7 @@ def index():
 
 
 @billing.route('/invoice/print/<int:order_id>', methods=['GET'])
+@Permission.need_login()
 def invoice_print(order_id):
     """发货单打印"""
     order = Order.query.get(order_id)

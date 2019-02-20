@@ -1,10 +1,11 @@
 from flask import render_template, request, redirect, url_for
-from plugins.common import page_generator
+from plugins.common import page_generator, Permission
 from views.firm import firm
 from models.common import Firm, People, Order
 
 
 @firm.route('/', methods=['GET'])
+@Permission.need_login()
 def index():
     """主页,列表页"""
     companies = Firm.query.all()
@@ -12,12 +13,14 @@ def index():
 
 
 @firm.route('/new/', methods=['GET'])
+@Permission.need_login()
 def new():
     """新增公司/单位"""
     return render_template('firm/new.html')
 
 
 @firm.route('/new/', methods=['POST'])
+@Permission.need_login()
 def new_post():
     """新增公司/单位,表单提交"""
     name = request.form.get('name')
@@ -28,6 +31,7 @@ def new_post():
 
 
 @firm.route('/<int:company_id>/index/', methods=['GET'])
+@Permission.need_login()
 def company_index(company_id):
     """公司主页"""
     company = Firm.query.get(company_id)
@@ -41,6 +45,7 @@ def company_index(company_id):
 
 
 @firm.route('/<int:company_id>/edit/', methods=['GET'])
+@Permission.need_login()
 def company_edit(company_id):
     """公司信息编辑页"""
     company = Firm.query.get(company_id)
@@ -48,6 +53,7 @@ def company_edit(company_id):
 
 
 @firm.route('/<int:company_id>/edit/', methods=['POST'])
+@Permission.need_login()
 def company_edit_post(company_id):
     """公司信息编辑表单提交"""
     company = Firm.query.get(company_id)
@@ -59,12 +65,14 @@ def company_edit_post(company_id):
 
 
 @firm.route('/people/new/<int:company_id>', methods=['GET'])
+@Permission.need_login()
 def people_new(company_id):
     """新建联系人"""
     return render_template('firm/new_people.html', company_id=company_id)
 
 
 @firm.route('/people/new/', methods=['POST'])
+@Permission.need_login()
 def people_new_post():
     """新建联系人表单提交"""
     company_id = request.form.get('company_id')
@@ -77,6 +85,7 @@ def people_new_post():
 
 
 @firm.route('/people/<int:people_id>/edit/', methods=['GET'])
+@Permission.need_login()
 def people_edit(people_id):
     """人员信息修改页"""
     people = People.query.get(people_id)
@@ -84,6 +93,7 @@ def people_edit(people_id):
 
 
 @firm.route('/people/<int:people_id>/edit/', methods=['POST'])
+@Permission.need_login()
 def people_edit_post(people_id):
     """人员信息编辑,表单提交"""
     people = People.query.get(people_id)
@@ -91,6 +101,7 @@ def people_edit_post(people_id):
 
 
 @firm.route('/people/<int:people_id>/delete/', methods=['GET'])
+@Permission.need_login(level=1)
 def people_delete(people_id):
     """人员删除"""
     people = People.query.get(people_id).direct_delete_()

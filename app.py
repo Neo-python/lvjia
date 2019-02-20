@@ -6,17 +6,20 @@ install_as_MySQLdb()
 app = create_app()
 db.init_app(app=app)
 
+
 from views.recording import recording
 from views.firm import firm
 from views.product import product
 from views.billing import billing
 from views.clear import clear
+from views.admin import admin
 
 app.register_blueprint(recording)
 app.register_blueprint(firm)
 app.register_blueprint(product)
 app.register_blueprint(billing)
 app.register_blueprint(clear)
+app.register_blueprint(admin)
 
 from plugins.common import orders_info
 

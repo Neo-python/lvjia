@@ -1,10 +1,11 @@
 from flask import render_template, request, redirect, url_for
 from views.product import product
 from models.common import Product, Firm, ProductUnit
-from plugins.common import page_generator
+from plugins.common import page_generator, Permission
 
 
 @product.route('/', methods=['GET'])
+@Permission.need_login()
 def index():
     """主页,列表页"""
     page = int(request.args.get('page', 1))
@@ -17,12 +18,14 @@ def index():
 
 
 @product.route('/unit/', methods=['GET'])
+@Permission.need_login()
 def unit_index():
     """产品单位首页"""
     return render_template('product/unit_index.html', unit_list=ProductUnit.basic_unit())
 
 
 @product.route('/fixed_price/<int:company_id>/', methods=['GET'])
+@Permission.need_login()
 def fixed_price(company_id):
     """固定价格"""
     company = Firm.query.get(company_id)
@@ -30,6 +33,7 @@ def fixed_price(company_id):
 
 
 @product.route('/fixed_price/<int:company_id>/', methods=['POST'])
+@Permission.need_login()
 def fixed_price_post(company_id):
     """固定价格.表单提交
     """
@@ -47,12 +51,14 @@ def fixed_price_post(company_id):
 
 
 @product.route('/new/', methods=['GET'])
+@Permission.need_login()
 def new():
     """新增产品页"""
     return render_template('product/new.html', unit_list=ProductUnit.basic_unit())
 
 
 @product.route('/new/', methods=['POST'])
+@Permission.need_login()
 def new_post():
     """新增产品.表单提交
     新增产品数据提交后,broadcast函数为每家公司设定专价.
@@ -67,6 +73,7 @@ def new_post():
 
 
 @product.route('/<int:product_id>/edit/', methods=['GET'])
+@Permission.need_login()
 def edit(product_id):
     """编辑产品"""
     return render_template('product/edit.html', product=Product.query.get(product_id),
@@ -74,6 +81,7 @@ def edit(product_id):
 
 
 @product.route('/<int:product_id>/edit/', methods=['POST'])
+@Permission.need_login()
 def edit_post(product_id):
     """编辑产品.表单提交页"""
     product_ = Product.query.get(product_id)
@@ -85,6 +93,7 @@ def edit_post(product_id):
 
 
 @product.route('/<int:product_id>/delete/', methods=['GET'])
+@Permission.need_login(level=1)
 def delete(product_id):
     """删除产品"""
     Product.query.get(product_id).direct_delete_()
@@ -92,12 +101,14 @@ def delete(product_id):
 
 
 @product.route('/unit/new/', methods=['GET'])
+@Permission.need_login(level=1)
 def unit_new():
     """新建单位"""
     return render_template('product/unit_new.html')
 
 
 @product.route('/unit/new/', methods=['POST'])
+@Permission.need_login()
 def unit_new_post():
     """新建单位.表单提交"""
     name = request.form.get('name')
@@ -107,12 +118,14 @@ def unit_new_post():
 
 
 @product.route('/unit/child/<int:unit_id>/', methods=['GET'])
+@Permission.need_login()
 def unit_child(unit_id):
     """设定子单位"""
     return render_template('product/unit_child.html', parent=ProductUnit.query.get(unit_id))
 
 
 @product.route('/unit/child/<int:unit_id>/', methods=['POST'])
+@Permission.need_login()
 def unit_child_post(unit_id):
     """设定子单位.表单提交"""
     name = request.form.get('name')

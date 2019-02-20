@@ -1,7 +1,66 @@
 .small-input {
     width: 80px;
 }
-.small-label{
+
+.small-label {
     width: 80px;
     display: inline;
 }
+
+/* 弹窗 start*/
+.message-box-wrapper {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    text-align: center;
+    background-color: rgba(0, 0, 0, .3)
+}
+
+.message-box-wrapper::after {
+    content: "";
+    display: inline-block;
+    height: 100%;
+    width: 0;
+    vertical-align: middle;
+}
+
+.message-box {
+    display: inline-block;
+    vertical-align: middle;
+    position: relative;
+    width: 300px;
+    height: 200px;
+    background: #ffffff;
+}
+
+.message-box-content {
+    padding: 30px 20px;
+}
+
+.message-box-btns {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 50px;
+}
+
+.message-box-cancel,
+.message-box-confirm {
+    float: left;
+    width: 100%;
+    height: 100%;
+    line-height: 50px;
+    color: #ffffff;
+}
+
+.message-box-cancel {
+    background-color: #8f9498;
+}
+
+.message-box-confirm {
+    background-color: #FF6400;
+}
+
+/* 弹窗 end */

@@ -12,12 +12,10 @@
             <a href="{{ url_for('billing.invoice_print', order_id=order.id) }}">打印</a>
             <a href="{{ url_for('recording.order_edit', order_id=order.id) }}">编辑/查看</a>
             <div>
-                {% for form in order.forms %}
-                    <span>{{ form.person.name }}</span>
-                    <span>{{ form.product.name }}</span>
-                    <span>{{ form.unit.name }}</span>
-                    <span>{{ form.quantity }}</span><br>
+                {% for name, info in orders_info(order).items() %}
+                    <span>{{ name }}:{{ info.quantity|round(2) }}{{ info.unit }}</span>
                 {% endfor %}
+
             </div>
         </div>
     {% endfor %}

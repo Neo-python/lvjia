@@ -1,7 +1,8 @@
 """全局通用插件库"""
 import datetime
 from collections import Iterable
-from flask import render_template
+from functools import wraps
+from flask import render_template, session, request, redirect, url_for, flash
 
 
 def page_generator(current_page_num: int, max_num: int, url: str, url_args: dict = None, style: str = 'action'):
@@ -84,9 +85,36 @@ class OrdersInfo:
         else:
             # 没有记录的产品
             self.form_info[form.product.name] = {
-                'unit': form.unit.parent.name,
+                'unit': form.unit.parent_unit.name,
                 'quantity': form.quantity * form.unit.multiple  # 订单数量乘以订单所用单位倍数
             }
+
+
+class Permission:
+    """权限装饰器"""
+
+    @staticmethod
+    def need_login(level: int = 0):
+        """需要登录
+        :param level: 权限等级
+        :return:视图函数或请求前url
+        """
+
+        def wrapper(func):
+            @wraps(func)
+            def inner(*args, **kwargs):
+                admin = session.get('admin')
+                if admin and admin['level'] >= level:
+                    return func(*args, **kwargs)
+                elif admin:
+                    flash('权限不足,请切换到超级管理员账号!', category='error')
+                    return redirect(request.headers.get('Referer'))
+                else:
+                    return redirect(url_for('admin.login'))
+
+            return inner
+
+        return wrapper
 
 
 def orders_info(orders: list) -> dict:

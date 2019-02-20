@@ -73,10 +73,10 @@
                         <select name="product_id" id="product_id" class="product" required>
                             <option value=""></option>
                             {% for product in order.firm.EP %}
-                                <option value="{{ product.id }}" data-price="{{ product.price }}"
+                                <option value="{{ product.product_id }}" data-price="{{ product.price }}"
                                         data-unit_name="{{ product.unit.name }}"
                                         data-unit_id="{{ product.unit_id }}"
-                                        {% if form.product_id == product.id %}selected{% endif %}
+                                        {% if form.product_id == product.product_id %}selected{% endif %}
                                 >{{ product.product.name }}
                                 </option>
                             {% endfor %}
