@@ -10,7 +10,7 @@ class Firm(Common, db.Model):
     id = db.Column(db.Integer, index=True, primary_key=True)
 
     name = db.Column(db.String(length=50), nullable=False, unique=True, comment='公司/单位名')
-    address = db.Column(db.String(length=255), comment='公司/单位地址')
+    address = db.Column(db.String(length=255), default='', comment='公司/单位地址')
 
     personnel = db.relationship('People', lazy='select', cascade="all, delete-orphan", backref='firm')
     EP = db.relationship('ExternalPrice', lazy='select', cascade="all, delete-orphan", backref='firm')
@@ -108,7 +108,7 @@ class People(Common, db.Model):
     id = db.Column(db.Integer, index=True, primary_key=True)
 
     name = db.Column(db.String(length=50), nullable=False, comment='人名')
-    telephone = db.Column(db.String(length=13), nullable=False, comment='联系方式')
+    telephone = db.Column(db.String(length=13), default='', nullable=False, comment='联系方式')
     company_id = db.Column(db.Integer, db.ForeignKey('firm.id'), nullable=False)
     remarks = db.Column(db.String(length=255), default='', comment='人员备注')
 
