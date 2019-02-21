@@ -26,10 +26,10 @@
             <label for="product_id">产品
                 <select name="product_id" id="product_id" class="product" required>
                     <option value=""></option>
-                    {% for product in order.firm.EP %}
-                        <option value="{{ product.id }}" data-price="{{ product.price }}"
-                                data-unit_name="{{ product.unit.name }}"
-                                data-unit_id="{{ product.unit_id }}">{{ product.product.name }}
+                    {% for ep in order.firm.EP %}
+                        <option value="{{ ep.product_id }}" data-price="{{ ep.price }}"
+                                data-unit_name="{{ ep.unit.name }}"
+                                data-unit_id="{{ ep.unit_id }}">{{ ep.product.name }}
                         </option>
                     {% endfor %}
                 </select>
@@ -72,12 +72,12 @@
                     <label for="product_id">产品
                         <select name="product_id" id="product_id" class="product" required>
                             <option value=""></option>
-                            {% for product in order.firm.EP %}
-                                <option value="{{ product.product_id }}" data-price="{{ product.price }}"
-                                        data-unit_name="{{ product.unit.name }}"
-                                        data-unit_id="{{ product.unit_id }}"
-                                        {% if form.product_id == product.product_id %}selected{% endif %}
-                                >{{ product.product.name }}
+                            {% for ep in order.firm.EP %}
+                                <option value="{{ ep.product_id }}" data-price="{{ ep.price }}"
+                                        data-unit_name="{{ ep.unit.name }}"
+                                        data-unit_id="{{ ep.unit_id }}"
+                                        {% if form.product_id == ep.product_id %}selected{% endif %}
+                                >{{ ep.product.name }}
                                 </option>
                             {% endfor %}
                         </select>

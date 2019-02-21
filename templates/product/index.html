@@ -1,27 +1,39 @@
 {% extends 'base.html' %}
 {% block body %}
-    <a href="{{ url_for('product.new') }}">新增产品</a>
-    <table>
-        <thead>
-        <tr>
-            <th>名称</th>
-            <th>单位</th>
-            <th>单价</th>
-            <th>操作</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for product in products %}
-            <tr>
-                <td>{{ product.name }}</td>
-                <td>{{ product.unit.name }}</td>
-                <td>{{ product.price }}</td>
-                <td><a href="{{ url_for('product.edit', product_id=product.id) }}">编辑</a></td>
-            </tr>
-        {% endfor %}
-
-        </tbody>
-    </table>
+    <div class="row">
+        <div class="col-lg-12">
+            <section class="panel">
+                <header class="panel-heading head-border">
+                    产品列表
+                    <a href="{{ url_for('product.new') }}" class="btn btn-success product-new"><i
+                            class="fa fa-plus"></i> 新增产品</a>
+                </header>
+                <table class="table table-striped custom-table table-hover">
+                    <thead>
+                    <tr>
+                        <th><i class="fa fa-bookmark-o"></i> 产品名</th>
+                        <th class="hidden-xs"><i class="fa fa-building-o"></i> 单价</th>
+                        <th><i class="fa fa-bar-chart-o"></i> 基础计量单位</th>
+                        <th><i class="fa fa-pencil"></i> 修改产品信息</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for product in products %}
+                        <tr>
+                            <td>{{ product.name }}</td>
+                            <td class="hidden-xs">{{ product.price }}</td>
+                            <td>{{ product.unit.name }}</td>
+                            <td class="hidden-xs">
+                                <a href="{{ url_for('product.edit', product_id=product.id) }}"
+                                   class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i>编辑</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+        </div>
+    </div>
     {{ page|safe }}
 {% endblock %}
 {% block script %}

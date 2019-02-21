@@ -1,16 +1,39 @@
 {% extends 'base.html' %}
 {% block body %}
-    <form action="" method="post">
-        <label for="name">名称<input type="text" id="name" name="name" required></label>
-        <label for="unit_id">计量单位 <select name="unit_id" id="unit_id" required>
-            <option value=""></option>
-            {% for unit in unit_list %}
-                <option value="{{ unit.id }}">{{ unit.name }}</option>
-            {% endfor %}
-        </select></label>
-        <label for="price">单价<input type="number" id="price" name="price" step="0.01" required></label>
-        <button>保存</button>
-    </form>
+    <div class="col-lg-6">
+        <section class="panel">
+            <header class="panel-heading">
+                新增产品
+            </header>
+            <div class="panel-body">
+                <form role="form" action="" method="post">
+                    <div class="form-group">
+                        <label>产品名</label>
+                        <div class="iconic-input">
+                            <i class="fa fa-microphone-slash"></i>
+                            <input type="text" class="form-control" placeholder="产品名" required name="name">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>产品基础计量单位</label>
+                        <div class="iconic-input">
+                            <select class="form-control input-lg m-b-10" name="unit_id">
+                                {% for unit in unit_list %}
+                                    <option value="{{ unit.id }}">{{ unit.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>产品单价</label>
+                        <input type="number" class="form-control" placeholder="产品单价" step="0.01" required name="price">
+                    </div>
+                    <button class="btn btn-info product-new">保存</button>
+                </form>
+
+            </div>
+        </section>
+    </div>
 {% endblock %}
 {% block script %}
 

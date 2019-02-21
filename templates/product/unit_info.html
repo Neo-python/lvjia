@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block head %}
+
+{% endblock %}
+{% block body %}
+    <section class="panel">
+        <header class="panel-heading head-border">
+            <span>基础单位</span><span class="unit_info-span">{{ unit.name }}</span>
+        </header>
+        <div class="panel-body w-setting">
+            <ul class="team-list chat-list-side info statistics border-less-list setting-list">
+                {% for subordinate in unit.subordinates %}
+                    <li>
+                        <div class="inline">
+                            <span class="name">次级单位名称: <span class="unit_info-span">{{ subordinate.name }}</span></span>
+                            <span class="name">次级单位倍率: <span
+                                    class="unit_info-span">{{ subordinate.multiple }}</span></span>
+                        </div>
+                    </li>
+                {% endfor %}
+
+            </ul>
+        </div>
+    </section>
+{% endblock %}
+{% block script %}
+
+{% endblock %}

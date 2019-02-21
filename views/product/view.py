@@ -9,7 +9,7 @@ from plugins.common import page_generator, Permission
 def index():
     """主页,列表页"""
     page = int(request.args.get('page', 1))
-    products = Product.query.paginate(page=page, per_page=30)
+    products = Product.query.paginate(page=page, per_page=10)
     data = {
         'page': page_generator(page, max_num=products.pages, url=url_for('product.index')),
         'products': products.items
@@ -100,8 +100,15 @@ def delete(product_id):
     return redirect(url_for('product.index'))
 
 
+@product.route('/unit/<int:unit_id>/', methods=['GET'])
+def unit_info(unit_id):
+    """计量单位主页"""
+    unit = ProductUnit.query.get(unit_id)
+    return render_template('product/unit_info.html', unit=unit)
+
+
 @product.route('/unit/new/', methods=['GET'])
-@Permission.need_login(level=1)
+@Permission.need_login()
 def unit_new():
     """新建单位"""
     return render_template('product/unit_new.html')

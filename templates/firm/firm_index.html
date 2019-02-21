@@ -20,7 +20,8 @@
                                     <i class="fa fa-jpy"></i>
                                     订单列表
                                 </a>
-                                <a class="btn btn-danger btn-block addon-btn m-b-10">
+                                <a href="{{ url_for('product.fixed_price', company_id=company.id) }}"
+                                   class="btn btn-danger btn-block addon-btn m-b-10">
                                     <i class="fa fa-jpy"></i>
                                     产品定价
                                 </a>

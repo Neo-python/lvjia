@@ -7,71 +7,51 @@
     display: inline;
 }
 
-/* 弹窗 start*/
-.message-box-wrapper {
-    position: fixed;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    text-align: center;
-    background-color: rgba(0, 0, 0, .3)
-}
-
-.message-box-wrapper::after {
-    content: "";
-    display: inline-block;
-    height: 100%;
-    width: 0;
-    vertical-align: middle;
-}
-
-.message-box {
-    display: inline-block;
-    vertical-align: middle;
+/* page start */
+.ui.floated.pagination.menu.page_div > a {
     position: relative;
-    width: 300px;
-    height: 200px;
-    background: #ffffff;
-}
-
-.message-box-content {
-    padding: 30px 20px;
-}
-
-.message-box-btns {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 50px;
-}
-
-.message-box-cancel,
-.message-box-confirm {
     float: left;
-    width: 100%;
-    height: 100%;
-    line-height: 50px;
-    color: #ffffff;
+    padding: 6px 12px;
+    margin-left: -1px;
+    line-height: 1.42857143;
+    color: #337ab7;
+    text-decoration: none;
+    background-color: #fff;
+    border: 1px solid #ddd;
 }
 
-.message-box-cancel {
-    background-color: #8f9498;
+.ui.floated.pagination.menu.page_div > a:hover {
+    color: #fff;
+    background-color: #a978d1;
+    border-color: #a978d1;
 }
 
-.message-box-confirm {
-    background-color: #FF6400;
+.ui.floated.pagination.menu.page_div > a.item.action {
+    background-color: #a978d1;
+    border-color: #a978d1;
+    color: #0c0c0c;
 }
 
-/* 弹窗 end */
+/* page end */
+
+
+/* form start */
+input.check-gif {
+    background: url("/static/img/check.gif") right no-repeat !important;
+
+}
+
+/* form end */
 /* 公司选择页 start */
-.btn.btn-success.firm{
+.btn.btn-success.firm {
     margin: 0 0 2% 5%;
 }
-.btn.btn-success.firm-new{
+
+.btn.firm-new {
     margin-top: 2%;
     float: right;
 }
+
 .row.state-overview a:hover section {
     background: #41a173;
 }
@@ -79,12 +59,25 @@
 .row.state-overview {
     padding: 0 5% 0 5%;
 }
-.color-black{
-    color: #0f0f0f!important;
+
+.color-black {
+    color: #0f0f0f !important;
 }
+
 .firm-a {
     padding-top: 8px;
     padding-bottom: 8px;
 }
 
 /* 公司选择页 end */
+/* 产品 start */
+.product-new {
+    float: right;
+}
+
+.unit_info-span {
+    font-weight: bolder;
+    font-size: 20px
+}
+
+/* 产品 end */

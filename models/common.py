@@ -68,7 +68,10 @@ class ProductUnit(Common, db.Model):
 
     name = db.Column(db.String(length=50), nullable=False, comment='产品名')
     multiple = db.Column(db.DECIMAL(precision=9, decimal_return_scale=2), default=1, nullable=False, comment='最小单位的倍数')
-    parent_id = db.Column(db.SMALLINT, default=0, nullable=False, comment='单位等级,0:基础单位,其他:父级单位.')
+    parent_id = db.Column(db.SMALLINT, db.ForeignKey('product_unit.id'), default=0, nullable=False,
+                          comment='单位等级,0:基础单位,其他:父级单位.')
+
+    subordinates = db.relationship('ProductUnit', lazy='select')
 
     def __init__(self, name: str, multiple: float, parent_id: int):
         self.name = name

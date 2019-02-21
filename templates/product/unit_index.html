@@ -3,26 +3,40 @@
 
 {% endblock %}
 {% block body %}
-    <a href="{{ url_for('product.unit_new') }}">新增计量单位</a>
-    <table>
-        <thead>
-        <tr>
-            <th>单位名</th>
-            <th>倍数</th>
-            <th>操作</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for unit in unit_list %}
-            <tr>
-                <td>{{ unit.name }}</td>
-                <td>{{ unit.multiple }}</td>
-                <td>操作<a href="{{ url_for('product.unit_child', unit_id=unit.id) }}">添加子单位</a></td>
-            </tr>
-        {% endfor %}
+    <div class="col-lg-6">
+        <section class="panel">
+            <header class="panel-heading head-border">
+                产品基础计量单位 <a href="{{ url_for('product.unit_new') }}"
+                            class="btn btn-success product-new"><i class="fa fa-plus"></i> 新增计量单位</a>
+            </header>
+            <table class="table table-striped custom-table table-hover">
+                <thead>
+                <tr>
+                    <th><i class="fa fa-book"></i> 单位名</th>
+                    <th><i class="fa fa-line-chart"></i> 基础倍率</th>
+                    <th><i class="fa fa-pencil"></i> 操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for unit in unit_list %}
+                    <tr>
+                        <td>{{ unit.name }}</td>
+                        <td>
+                            {{ unit.multiple }}
+                        </td>
+                        <td>
+                            <a href="{{ url_for('product.unit_child', unit_id=unit.id) }}"
+                               class="btn btn-success btn-xs"
+                            ><i class="fa fa-plus"></i> 添加次级单位</a>
+                            <a href="{{ url_for('product.unit_info', unit_id=unit.id) }}" class="btn btn-primary btn-xs" >查看单位信息</a>
+                        </td>
+                    </tr>
 
-        </tbody>
-    </table>
+                {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </div>
 
 {% endblock %}
 {% block script %}

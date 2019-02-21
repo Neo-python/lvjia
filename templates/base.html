@@ -78,7 +78,7 @@
                 <li><a href="{{ url_for('recording.index') }}"><i class="fa fa-book"></i> 录单</a></li>
                 <li><a href="{{ url_for('firm.index') }}"><i class="fa fa-book"></i> 公司</a></li>
                 <li><a href="{{ url_for('product.index') }}"><i class="fa fa-cogs"></i> 产品</a></li>
-                <li><a href="{{ url_for('product.unit_index') }}"><i class="fa fa-cogs"></i> 计量单位</a></li>
+                <li><a href="{{ url_for('product.unit_index') }}"><i class="fa fa-balance-scale"></i> 计量单位</a></li>
                 <li><a href="{{ url_for('billing.index') }}"><i class="fa fa-tasks"></i> 出单</a></li>
                 </li>
                 <li class="menu-list"><a href=""><i class="fa fa-book"></i> <span>UI Elements</span></a>
@@ -158,28 +158,10 @@
             </ul>
             <!--sidebar nav end-->
 
-            <!--sidebar widget start-->
-            <!--sidebar widget end-->
-
         </div>
     </div>
     <div class="body-content">
-        {% if get_flashed_messages(['error']) %}
-            <div class="message-box-wrapper">
-                <div class="message-box">
-                    <div class="message-box-header"></div>
-                    <div class="message-box-content">
-                        {% for get_flashed_message in get_flashed_messages(['error']) %}
-                            {{ get_flashed_message[1] }}
-                        {% endfor %}
-                    </div>
-                    <div class="message-box-btns">
-                        {#                    <div class="message-box-cancel">取消</div>#}
-                        <div class="message-box-confirm">确定</div>
-                    </div>
-                </div>
-            </div>
-        {% endif %}
+
         <div class="wrapper">
             {% block body %}
 
@@ -265,7 +247,11 @@
 <script src="/static/js/scripts.js"></script>
 <script src="/static/js/neo.js"></script>
 
-
+<!-- 自定义js-->
+<!-- 浮动信息提示 -->
+<script src="/static/js/toastr-master/toastr.js"></script>
+<link href="/static/js/toastr-master/toastr.css" rel="stylesheet"/>
+<script src="/static/js/toastr-init.js"></script>
 <script type="text/javascript">
 
     $(document).ready(function () {
@@ -275,9 +261,18 @@
         $('.timer').countTo();
         $('.message-box-confirm').click(function () {
             $('.message-box-wrapper').remove();
-        })
+        });
+        {% if get_flashed_messages(['error']) %}
+            {% for message in get_flashed_messages(['error']) %}
+                toastr.warning('{{ message[1] }}');
+            {% endfor %}
+        {% endif %}
 
     });
+
+</script>
+
+<script>
 
 </script>
 {% block script %}

@@ -3,11 +3,32 @@
 
 {% endblock %}
 {% block body %}
-    <form action="" method="post">
-        <label for="name">单位名 <input type="text" name="name" id="name"></label>
-        <label for="multiple">倍数 <input type="text" name="multiple" id="multiple"></label>
-        <button>提交</button>
-    </form>
+    <div class="col-lg-6">
+        <section class="panel">
+            <header class="panel-heading">
+                新增基础单位
+            </header>
+            <div class="panel-body">
+                <form role="form" action="" method="post">
+                    <div class="form-group">
+                        <label>单位名</label>
+                        <div class="iconic-input">
+                            <i class="fa fa-balance-scale"></i>
+                            <input type="text" class="form-control" placeholder="单位名" name="name" id="name" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>基础倍率</label>
+                        <div class="iconic-input right">
+                            <i class="fa fa-certificate"></i>
+                            <input type="number" class="form-control" placeholder="基础倍率" name="multiple" id="multiple" required>
+                        </div>
+                    </div>
+                    <button class="btn btn-info">提交</button>
+                </form>
+            </div>
+        </section>
+    </div>
 {% endblock %}
 {% block script %}
 

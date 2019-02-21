@@ -78,15 +78,16 @@ class OrdersInfo:
 
     def update(self, form):
         """更新数据"""
+        multiple = form.unit.multiple / form.unit.parent_unit.multiple
         if self.form_info.get(form.product.name):
             """已有记录的产品"""
             # 订单记录数加上 --> 订单数量乘以订单所用单位倍数
-            self.form_info[form.product.name]['quantity'] += form.quantity * form.unit.multiple
+            self.form_info[form.product.name]['quantity'] += form.quantity * multiple
         else:
             # 没有记录的产品
             self.form_info[form.product.name] = {
                 'unit': form.unit.parent_unit.name,
-                'quantity': form.quantity * form.unit.multiple  # 订单数量乘以订单所用单位倍数
+                'quantity': form.quantity * multiple  # 订单数量乘以订单所用单位倍数
             }
 
 
