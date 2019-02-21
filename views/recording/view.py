@@ -2,7 +2,7 @@ import datetime
 from flask import render_template, request, redirect, url_for, jsonify
 from views.recording import recording
 from models.common import Firm, Order, OrderForm
-from plugins.common import Permission
+from plugins.common import Permission, OrmVerity
 
 
 @recording.route('/index/', methods=['GET'])
@@ -65,7 +65,7 @@ def order_edit_post(order_id):
     # 更新order信息
     remarks = request.form.get('remarks')
     deadline = request.form.get('deadline')
-    Order.query.filter_by(id=order_id).update({'remarks': remarks, 'deadline': deadline})
+    Order.query.filter_by(id=order_id).update({'remarks': remarks, 'deadline': OrmVerity.verify_deadline(deadline)})
 
     # 收集表单数据
     ids = request.form.getlist('id')
