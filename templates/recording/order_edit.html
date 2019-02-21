@@ -1,19 +1,13 @@
 {% extends 'base.html' %}
 {% block head %}
-    <link rel="stylesheet" type="text/css" href="/static/js/bootstrap-datetimepicker/css/datetimepicker.css"/>
-    <style>
-        .unit_span {
-            display: inline-block;
-            min-width: 45px;
-        }
-    </style>
+    {% include 'recording/recording_head.html' %}
 {% endblock %}
 {% block body %}
     <div id="template" hidden>
-        <div>
+        <div class="inputs col-lg-12 panel">
             <input type="number" value="" name="id" hidden>
-            <label for="personnel">联系人
-                <select name="personnel" id="personnel" class="personnel" required>
+            <label for="personnel">联系人:
+                <select name="personnel" id="personnel" class="personnel form-control input-sm" required>
                     {% if order.firm.personnel|length != 1 %}
                         <option value=""></option>
                     {% endif %}
@@ -23,8 +17,8 @@
                     {% endfor %}
                 </select>
             </label>
-            <label for="product_id">产品
-                <select name="product_id" id="product_id" class="product" required>
+            <label for="product_id">产品:
+                <select name="product_id" id="product_id" class="product form-control input-sm" required>
                     <option value=""></option>
                     {% for ep in order.firm.EP %}
                         <option value="{{ ep.product_id }}" data-price="{{ ep.price }}"
@@ -34,34 +28,32 @@
                     {% endfor %}
                 </select>
             </label>
-            <label for="price" class="small-label">单价
+            <label for="price" class="small-label">单价:
                 <input type="number" name="price" id="price" step="0.01" class="price small-input" required>
                 <span>单位: <span class="unit_span"></span>
                     <input type="text" readonly name="unit" class="unit" hidden>
                 </span>
             </label>
-            <label for="quantity" class="small-label">数量
+            <label for="quantity" class="small-label">数量:
                 <input type="number" name="quantity" id="quantity" step="0.01" required class="small-input">
             </label>
-            <label for="real" class="small-label">实量
+            <label for="real" class="small-label">实量:
                 <input type="number" name="real" id="real" required class="small-input">
             </label>
-            <button class="delete" type="button">删除</button>
+            <button class="delete  btn btn-danger" type="button">删除</button>
         </div>
     </div>
     <form action="" method="post" autocomplete="off">
-        <h1>{{ order.firm.name }}</h1>
-        <button>提交</button>
-        <label for="deadline">完成时间<input size="16" type="text" readonly class="form_datetime" name="deadline"
-                                         value="{{ order.deadline_to_string }}"></label>
-        <label for="remarks">订单备注信息<textarea name="remarks" id="" cols="30"
-                                             rows="10">{{ order.remarks }}</textarea></label>
+        <h1>{{ order.firm.name }}订单数据编辑</h1>
+        <button type="button" id="add_input" class="btn btn-success">添加</button>
+        <label for="deadline">完成时间<input size="16" type="text" readonly class="form_datetime datetime_width"
+                                         name="deadline" value="{{ order.deadline_to_string }}"></label>
         <div id="input">
             {% for form in order.forms %}
-                <div>
+                <div class="inputs col-lg-12 panel">
                     <input type="number" value="{{ form.id }}" name="id" hidden>
-                    <label for="personnel">联系人
-                        <select name="personnel" id="personnel" class="personnel" required>
+                    <label for="personnel">联系人:
+                        <select name="personnel" id="personnel" class="personnel form-control input-sm" required>
                             {% for person in order.firm.personnel %}
                                 <option value="{{ person.id }}"
                                         {% if person.id == form.person_id %}selected{% endif %}>{{ person.name }}
@@ -69,8 +61,8 @@
                             {% endfor %}
                         </select>
                     </label>
-                    <label for="product_id">产品
-                        <select name="product_id" id="product_id" class="product" required>
+                    <label for="product_id">产品:
+                        <select name="product_id" id="product_id" class="product form-control input-sm" required>
                             <option value=""></option>
                             {% for ep in order.firm.EP %}
                                 <option value="{{ ep.product_id }}" data-price="{{ ep.price }}"
@@ -82,29 +74,32 @@
                             {% endfor %}
                         </select>
                     </label>
-                    <label for="price" class="small-label">单价
+                    <label for="price" class="small-label">单价:
                         <input type="number" name="price" id="price" step="0.01" class="price small-input" required
                                value="{{ form.price }}">
                         <span>单位: <span class="unit_span">{{ form.unit.name }}</span>
                     <input type="text" readonly name="unit" class="unit" hidden value="{{ form.unit_id }}">
                 </span>
                     </label>
-                    <label for="quantity" class="small-label">数量
+                    <label for="quantity" class="small-label">数量:
                         <input type="number" name="quantity" id="quantity" step="0.01" required class="small-input"
                                value="{{ form.quantity }}">
                     </label>
-                    <label for="real" class="small-label">实量
+                    <label for="real" class="small-label">实量:
                         <input type="number" name="real" id="real" required class="small-input"
                                value="{{ form.real_quantity }}" step="0.01">
                     </label>
-                    <button class="edit-delete" type="button"
+                    <button class="edit-delete btn btn-danger" type="button"
                             data-href="{{ url_for('recording.form_delete', form_id=form.id) }}">删除
                     </button>
                 </div>
             {% endfor %}
 
         </div>
-        <button type="button" id="add_input">添加</button>
+        <label for="remarks">订单备注信息<textarea name="remarks" id="" cols="100"
+                                             rows="1">{{ order.remarks }}</textarea></label>
+
+        <button class="btn btn-info firm-new">提交</button>
     </form>
 {% endblock %}
 {% block script %}
