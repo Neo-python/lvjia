@@ -30,8 +30,7 @@
                                 <td>{{ order.remarks }}</td>
                                 <td>
                                     <a href="{{ url_for('recording.order_edit', order_id=order.id) }}"
-                                       class="btn btn-success btn-xs"><i class="fa fa-edit"></i></a>
-                                    <a class="btn btn-primary btn-xs"><i class="fa fa-print"></i></a>
+                                       class="btn btn-primary btn-xs"><i class="fa fa-edit"></i>编辑</a>
                                 </td>
                             </tr>
                         {% endfor %}
