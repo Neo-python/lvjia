@@ -97,6 +97,13 @@ def people_edit(people_id):
 def people_edit_post(people_id):
     """人员信息编辑,表单提交"""
     people = People.query.get(people_id)
+    name = request.form.get('name')
+    telephone = request.form.get('telephone')
+    remarks = request.form.get('remarks')
+    people.name = name
+    people.telephone = telephone
+    people.remarks = remarks
+    people.direct_update_()
     return redirect(url_for('firm.company_index', company_id=people.company_id))
 
 

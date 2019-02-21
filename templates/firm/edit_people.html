@@ -1,13 +1,43 @@
 {% extends 'base.html' %}
 {% block body %}
-    <form action="" method="post">
-        <label for="name">姓名<input type="text" name="name" id="name" value="{{ people.name }}"></label>
-        <label for="telephone">联系方式<input type="text" name="telephone" id="telephone"
-                                          value="{{ people.telephone }}"></label>
-        <label for="remarks">备注信息<input type="text" name="remarks" id="remarks" value="{{ people.remarks }}"></label>
-        <button>保存</button>
-    </form>
-    <a href="{{ url_for('firm.people_delete', people_id=people.id) }}">删除人员</a>
+    <div class="col-lg-6">
+        <section class="panel">
+            <header class="panel-heading">
+                <span style="font-size: 25px">编辑联系人</span> <a href="{{ url_for('firm.people_delete', people_id=people.id) }}"
+                                  class="btn btn-danger firm-new">删除人员</a>
+            </header>
+            <div class="panel-body">
+                <form role="form" action="" method="post">
+                    <div class="form-group">
+                        <label>姓名</label>
+                        <div class="iconic-input">
+                            <i class="fa fa-child"></i>
+                            <input type="text" class="form-control" placeholder="姓名" name="name" id="name"
+                                   value="{{ people.name }}" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>联系方式</label>
+                        <div class="iconic-input">
+                            <i class="fa fa-phone"></i>
+                            <input type="text" class="form-control" placeholder="联系方式" name="telephone" id="telephone"
+                                   value="{{ people.telephone }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-2 col-sm-2 control-label">备注信息</label>
+                        <div class="col-lg-10">
+                            <textarea class="wishContent form-control" placeholder="请输入不超过15个字" maxlength="15"
+                                      id="remarks" name="remarks">{{ people.remarks }}</textarea>
+                            <span class="wordsNum">{{ people.remarks|length }}/15</span>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-info firm-new"><i class="fa fa-plus"></i> 新增 联系人</button>
+                </form>
+            </div>
+        </section>
+    </div>
+
 {% endblock %}
 {% block script %}
 

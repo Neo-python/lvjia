@@ -6,13 +6,44 @@
             display: inline-block;
             min-width: 45px;
         }
+        .datetime_width{
+            width: 38%;
+        }
+        label {
+            margin-right: 2%;
+        }
+
+        .inputs {
+            margin-bottom: 1%;
+            padding: 10px;
+        }
+
+        .form-control.input-sm {
+            display: inline !important;
+            width: auto !important;
+        }
+
+        textarea {
+            vertical-align: middle;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        input, select, textarea {
+            font-family: 'Source Sans Pro', sans-serif;
+            font-weight: bolder;
+            font-size: 18px!important;
+            color: #000000!important;
+        }
     </style>
 {% endblock %}
 {% block body %}
     <div id="template" hidden>
-        <div>
-            <label for="personnel">联系人
-                <select name="personnel" id="personnel" class="personnel" required>
+        <div class="inputs col-lg-12 panel">
+            <label for="personnel">联系人:
+                <select name="personnel" id="personnel" class="personnel form-control input-sm" required>
                     {% if company.personnel|length != 1 %}
                         <option value=""></option>
                     {% endif %}
@@ -22,8 +53,8 @@
                     {% endfor %}
                 </select>
             </label>
-            <label for="product_id">产品
-                <select name="product_id" id="product_id" class="product" required>
+            <label for="product_id">产品:
+                <select name="product_id" id="product_id" class="product form-control input-sm" required>
                     <option value=""></option>
                     {% for product in company.EP %}
                         <option value="{{ product.product_id }}" data-price="{{ product.price }}"
@@ -33,28 +64,30 @@
                     {% endfor %}
                 </select>
             </label>
-            <label for="price" class="small-label">单价
+            <label for="price" class="small-label">单价:
                 <input type="number" name="price" id="price" step="0.01" class="price small-input" required>
-                <span>单位: <span class="unit_span"></span>
+                <span><span class="unit_span"></span>
                     <input type="text" readonly name="unit" class="unit" hidden>
                 </span>
             </label>
-            <label for="quantity" class="small-label">数量
+            <label for="quantity" class="small-label">数量:
                 <input type="number" name="quantity" id="quantity" step="0.01" required class="small-input">
             </label>
-            <label for="real" class="small-label">实量
+            <label for="real" class="small-label">实量:
                 <input type="number" name="real" id="real" step="0.01" class="small-input">
             </label>
-            <button class="delete" type="button">删除</button>
+            <button class="delete  btn btn-danger" type="button">删除</button>
         </div>
     </div>
     <form action="" method="post">
-        <h1>{{ company.name }}</h1>
-        <button>提交</button>
-        <label for="deadline">完成时间<input size="16" type="text" readonly class="form_datetime" name="deadline"></label>
-        <label for="remarks">订单备注信息<textarea name="remarks" id="" cols="30" rows="10"></textarea></label>
+        <h1>{{ company.name }}订单数据录入</h1>
+        <button type="button" id="add_input" class="btn btn-success">添加</button>
+        <label for="deadline" class="datetime_width">完成时间<input size="16" type="text" readonly class="form_datetime datetime_width" name="deadline"></label>
         <div id="input"></div>
-        <button type="button" id="add_input">添加</button>
+        <div><label for="remarks">订单备注信息<textarea name="remarks" id="" cols="128" rows="1"></textarea></label>
+            <button class="btn btn-info firm-new">提交</button>
+        </div>
+
     </form>
 {% endblock %}
 {% block script %}

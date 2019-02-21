@@ -1,34 +1,42 @@
 {% extends 'base.html' %}
 {% block body %}
-    <form action="" method="post">
-        <table>
-            <thead>
-            <tr>
-                <th>产品名</th>
-                <th>计量单位</th>
-                <th>价格</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for ep in company.EP %}
-                <tr>
-                    <td>{{ ep.product.name }}</td>
-                    <td>
-                        <select name="unit" id="unit_id" required>
-                            <option value=""></option>
-                            {% for unit in ep.product.unit_all %}
-                                <option value="{{ unit.id }}"
-                                        {% if ep.unit_id == unit.id %}selected{% endif %}>{{ unit.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </td>
-                    <td><input type="number" value="{{ ep.price }}" name="{{ ep.id }}" step="0.01"></td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-        <button>提交</button>
-    </form>
+    <div class="col-sm-6">
+        <section class="panel">
+            <header class="panel-heading head-border">
+                <h3>价格设定</h3>
+            </header>
+            <form action="" method="post">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th><i class="fa fa-id-card-o"></i> 产品名</th>
+                        <th><i class="fa fa-balance-scale"></i> 计量单位</th>
+                        <th><i class="fa fa-yen"></i> 价格</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    {% for ep in company.EP %}
+                        <tr>
+                            <td>{{ ep.product.name }}</td>
+                            <td>
+                                <select name="unit" id="unit_id" required>
+                                    <option value=""></option>
+                                    {% for unit in ep.product.unit_all %}
+                                        <option value="{{ unit.id }}"
+                                                {% if ep.unit_id == unit.id %}selected{% endif %}>{{ unit.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            <td><input type="number" value="{{ ep.price }}" name="{{ ep.id }}" step="0.01"></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <button class="btn btn-info product-new">提交修改</button>
+            </form>
+        </section>
+    </div>
 {% endblock %}
 {% block script %}
 
