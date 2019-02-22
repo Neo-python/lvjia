@@ -1,12 +1,20 @@
 """
 项目全局通用对象初始化文件
 """
+import redis
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
 import config
 
 db = SQLAlchemy()
+"""redis连接池
+官方推荐使用StrictRedis方法
+当使用了连接池,初始化设置都需要通过ConnectionPool传入参数.
+设置了decode_responses,默认存入取出自动编码解码.也就是以str存入,str取出.存入int也会被转为str
+"""
+pool = redis.ConnectionPool(host=config.REDIS_HOST, port='6379', db=1, decode_responses=True)
+Redis = redis.StrictRedis(connection_pool=pool)
 
 
 def create_app():

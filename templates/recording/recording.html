@@ -45,9 +45,10 @@
     <form action="" method="post">
         <h1>{{ company.name }}订单数据录入</h1>
         <button type="button" id="add_input" class="btn btn-success">添加</button>
-        <label for="deadline" class="datetime_width">完成时间<input size="16" type="text" readonly
-                                                                class="form_datetime datetime_width"
-                                                                name="deadline"></label>
+        <label for="deadline" class="datetime_width">
+            完成时间<i class="fa fa-clock-o"></i>
+            <input size="16" type="text" readonly class="form_datetime datetime_width" name="deadline">
+        </label>
         <div id="input"></div>
         <div><label for="remarks">订单备注信息<textarea name="remarks" id="" cols="100" rows="1"></textarea></label>
             <button class="btn btn-info firm-new">提交</button>

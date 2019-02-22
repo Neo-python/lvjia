@@ -46,8 +46,10 @@
     <form action="" method="post" autocomplete="off">
         <h1>{{ order.firm.name }}订单数据编辑</h1>
         <button type="button" id="add_input" class="btn btn-success">添加</button>
-        <label for="deadline" class="datetime_width">完成时间<input size="16" type="text" readonly class="form_datetime datetime_width"
-                                         name="deadline" value="{{ order.deadline_to_string }}"></label>
+        <label for="deadline" class="datetime_width">
+             完成时间<i class="fa fa-clock-o"></i><input size="16" type="text" readonly class="form_datetime datetime_width"
+                                                     name="deadline" value="{{ order.deadline_to_string }}">
+        </label>
         <div id="input">
             {% for form in order.forms %}
                 <div class="inputs col-lg-12 panel">

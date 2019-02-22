@@ -1,25 +1,62 @@
 {% extends 'base.html' %}
 {% block head %}
-
+    <style>
+        body {
+            font-size: 18px;
+        }
+    </style>
 {% endblock %}
 {% block body %}
-    {% for order in orders %}
-        <div>
-            <input type="checkbox" value="{{ order.id }}">
-            <span>{{ order.firm.name }}</span>
-            <span>{{ order.string_deadline }}</span>
-            <span>{{ order.remarks }}</span>
-            <a href="{{ url_for('billing.invoice_print', order_id=order.id) }}">打印</a>
-            <a href="{{ url_for('recording.order_edit', order_id=order.id) }}">编辑/查看</a>
-            <div>
-                {% for name, info in orders_info(order).items() %}
-                    <span>{{ name }}:{{ info.quantity|round(2) }}{{ info.unit }}</span>
-                {% endfor %}
-
-            </div>
-        </div>
-    {% endfor %}
-
+    <div class="col-sm-12">
+        <section class="panel">
+            <form action="{{ url_for('billing.orders_info') }}">
+                <header class="panel-heading head-border">
+                    订单列表
+                    <button class="btn btn-info firm-new"><i class="fa fa-print"></i> 生产信息汇总</button>
+                </header>
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th style="padding: 0; text-align: center">#</th>
+                        <th><i class="fa fa-university"></i> 公司/单位</th>
+                        <th><i class="fa fa-clock-o"></i> 时间/期限</th>
+                        <th><i class="fa fa-book"></i> 备注信息</th>
+                        <th><i class="fa fa-edit"></i> 操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for order in orders %}
+                        <tr class="active">
+                            <td rowspan="1" style="padding: 1% 0 0 0;text-align: center">
+                                <input type="checkbox" name="order_id" value="{{ order.id }}">
+                            </td>
+                            <td>{{ order.firm.name }}</td>
+                            <td>{{ order.deadline_format('%Y-%m-%d %H:%M', True) }}</td>
+                            <td>{{ order.remarks }}</td>
+                            <td>
+                                <a class="btn btn-info"
+                                   href="{{ url_for('billing.invoice_print', order_id=order.id) }}">
+                                    <i class="fa fa-print"></i>打印
+                                </a>
+                                <a class="btn btn-primary"
+                                   href="{{ url_for('recording.order_edit', order_id=order.id) }}">
+                                    <i class="fa fa-edit">编辑/查看</i>
+                                </a>
+                            </td>
+                        </tr>
+                        <tr class="success" style="border-bottom: 10px solid white">
+                            <td colspan="4">{% for name, info in orders_info(order).items() %}
+                                <span>{{ name }}:{{ info.quantity|round(2) }}{{ info.unit }}</span>
+                            {% endfor %}</td>
+                            <td></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </form>
+        </section>
+    </div>
+    {{ page|safe }}
 {% endblock %}
 {% block script %}
 

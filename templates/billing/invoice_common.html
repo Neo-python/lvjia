@@ -35,26 +35,6 @@
         {{ order.deadline_format('%Y年 %m月 %d日',True) }}
     </div>
     <div class="table-div">
-        {#        <table class="table" style="border-collapse:separate; border-spacing:0px 10px;">#}
-        {#            <tbody>#}
-        {#            {% for form in order.forms %}#}
-        {#                <tr>#}
-        {#                    <td>{{ form.person.name }}</td>#}
-        {#                    <td>{{ form.product.name }}</td>#}
-        {#                    <td>{{ form.quantity }} {{ form.unit.name }}</td>#}
-        {#                    <td>{{ form.price }}</td>#}
-        {#                    <td>{{ (form.price* form.quantity)|round(2) }}</td>#}
-        {#                </tr>#}
-        {#            {% endfor %}#}
-        {#            <tr>#}
-        {#                <td></td>#}
-        {#                <td></td>#}
-        {#                <td></td>#}
-        {#                <td></td>#}
-        {#                <td>{{ price_sum }}</td>#}
-        {#            </tr>#}
-        {#            </tbody>#}
-        {#        </table>#}
         {% for form in order.forms %}
             <div class="billing-row">
                 <div>{{ form.person.name }}</div>
@@ -75,3 +55,8 @@
 
     </div>
 </div>
+<script>
+    window.onload = function () {
+        window.print()
+    }
+</script>

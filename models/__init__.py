@@ -54,5 +54,5 @@ class Common(object):
 
     def __repr__(self):
         """想要此特殊方法被模型继承,需要将Common继承顺序排在ORM基类之前"""
-        description = ', '.join([f'{column.name}={getattr(self, column.key)}' for column in self.__table__._columns])
+        description = ', '.join([f'{column.name}={getattr(self, column.name)}' for column in self.__table__._columns])
         return f'<{description}>'

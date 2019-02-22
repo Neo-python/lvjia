@@ -183,7 +183,7 @@ class Order(Common, db.Model):
 
     company_id = db.Column(db.Integer, db.ForeignKey('firm.id'), nullable=False, comment='公司编号')
     remarks = db.Column(db.String(length=255), default='', nullable=False, comment='订单备注')
-    datetime_ = db.Column(db.TIMESTAMP, name='datetime', nullable=False, comment='订单创建日期')
+    datetime = db.Column(db.TIMESTAMP, name='datetime', nullable=False, comment='订单创建日期')
     deadline = db.Column(db.Date, comment='订单期限')
 
     forms = db.relationship('OrderForm', lazy='select', cascade="all, delete-orphan", backref='order')
@@ -228,7 +228,7 @@ class Order(Common, db.Model):
     def deadline_format(self, fmt: str, week: bool):
         """期限自定义格式化"""
         if not self.deadline:
-            return self.datetime_.strftime(fmt)
+            return self.datetime.strftime(fmt)
 
         string = self.deadline.strftime(fmt)
         if week:

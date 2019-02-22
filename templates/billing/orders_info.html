@@ -1,0 +1,66 @@
+<style>
+    body {
+        padding: 25px;
+    }
+    .order-info {
+        float: left;
+        display: inline-block;
+        max-width: 300px;
+        min-width: 250px;
+        margin-right: 1%;
+        margin-bottom: 1%;
+    }
+
+    .wrapper-order-info {
+        display: inline-block;
+    }
+
+    .firm-name {
+        font-size: larger;
+    }
+
+    .summary-name {
+        font-size: x-large;
+    }
+
+    .summary-quantity {
+        font-size: xx-large;
+    }
+
+    .summary-unit {
+        font-size: large;
+    }
+    .summary-wrapper{
+        display: flex;
+    }
+    .summary-info{
+        margin-right: 20px;
+    }
+</style>
+<div class="wrapper-order-info">
+    {% for order in orders %}
+        <div class="order-info">
+            <span class="firm-name">{{ order.firm.name }}</span>
+            <span>{{ order.deadline_format('%Y-%m-%d %H:%M', True) }}</span><br>
+            {% if order.remarks %}
+                <span style="color: red">{{ order.remarks }}</span><br>
+            {% endif %}
+            {% for form in order.forms %}
+                <span>{{ form.person.name }}</span>
+                <span>{{ form.product.name }}</span>
+                <span>{{ form.quantity }}</span>
+                <span>{{ form.unit.name }}</span> <br>
+            {% endfor %}
+        </div>
+    {% endfor %}
+</div>
+
+<div class="summary-wrapper">
+    {% for key, values in form_info.items() %}
+        <div class="summary-info">
+            <span class="summary-name">{{ key }}</span>
+            <span class="summary-quantity">{{ values.quantity|round(2) }}</span>
+            <span class="summary-unit">{{ values.unit }}</span>
+        </div>
+    {% endfor %}
+</div>

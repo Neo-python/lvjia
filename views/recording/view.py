@@ -95,7 +95,7 @@ def order_edit_post(order_id):
             OrderForm(person_id=person, product_id=product, price=price, quantity=quantity, order_id=order_id,
                       unit_id=unit, real_quantity=real).direct_add_()
     Order.static_commit_()
-    return redirect(url_for('firm.index'))
+    return redirect(url_for('billing.index'))
 
 
 @recording.route('/form/<int:form_id>/delete/', methods=['GET'])
