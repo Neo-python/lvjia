@@ -1,6 +1,6 @@
 """模板过滤器层"""
 from init import Redis
-from flask import session
+from flask import session, request
 from plugins.common import OrdersInfo
 
 
@@ -20,7 +20,18 @@ def real_status():
     return False
 
 
+def blueprint(aims: str):
+    """判断当前蓝图与目标蓝图是否一致
+    :return: 'active' or ''
+    """
+    if request.blueprint == aims:
+        return 'active'
+    else:
+        return ''
+
+
 filter_funcs = (
     orders_info,
     real_status,
+    blueprint
 )
