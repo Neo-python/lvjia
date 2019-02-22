@@ -3,6 +3,7 @@ import datetime
 from collections import Iterable
 from functools import wraps
 from flask import render_template, session, request, redirect, url_for, flash
+from init import Redis
 
 
 def page_generator(current_page_num: int, max_num: int, url: str, url_args: dict = None, style: str = 'action'):
@@ -111,7 +112,9 @@ class OrdersInfo:
 
 
 class Permission:
-    """权限装饰器"""
+    """权限装饰器
+    所有特殊条件验证函数,都需要设置默认值.
+    """
 
     @staticmethod
     def need_login(level: int = 0):
@@ -123,20 +126,52 @@ class Permission:
         def wrapper(func):
             @wraps(func)
             def inner(*args, **kwargs):
-                admin = session.get('admin')
-                if admin and admin['level'] >= level:
-                    return func(*args, **kwargs)
-                elif admin:
+
+                login = Permission.verify_login()
+
+                if not login:
+                    return redirect(url_for('admin.login'))
+                elif not Permission.need_login(level=level):
                     flash('权限不足,请切换到超级管理员账号!', category='error')
                     return redirect(request.headers.get('Referer'))
                 else:
-                    return redirect(url_for('admin.login'))
+                    return func(*args, **kwargs)
 
             return inner
 
         return wrapper
 
+    @staticmethod
+    def verify_login() -> bool:
+        """验证登录状态
+        1.验证session状态
+        2.通过redis验证登录状态是否过期
+        3.验证登录状态是否属于当前session.
+        4.验证失败后,清除session状态.再返回验证结果.
+        :return: 验证结果与前台通知消息
+        """
+        admin = session.get('admin')
+        session_id = session.get('session_id')
+        if not admin:
+            return False
+        redis_token = Redis.get(f'admin_{admin.get("id")}')
+        if redis_token:
+            if redis_token == session_id:
+                return True
+            else:
+                flash('您的账户已在异地登录,如果不是您本人操作,请联系管理员及时修改登录密码!', category='error')
+        else:
+            flash('登录状态已经过期,请重新登录', category='error')
+        session.clear()  # 清除session状态
+        return False
 
-def orders_info(orders: list) -> dict:
-    """jinja模板函数"""
-    return OrdersInfo(orders=orders).collect_quantity()
+    @staticmethod
+    def verify_level(level: int) -> bool:
+        """验证权限等级"""
+        admin = session.get('admin')
+        if not Permission.verify_login():
+            return False
+        if admin['level'] >= level:
+            return True
+        else:
+            return False

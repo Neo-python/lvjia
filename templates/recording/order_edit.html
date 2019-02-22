@@ -37,9 +37,11 @@
             <label for="quantity" class="small-label">数量:
                 <input type="number" name="quantity" id="quantity" step="0.01" required class="small-input">
             </label>
-            <label for="real" class="small-label">实量:
-                <input type="number" name="real" id="real" class="small-input" step="0.01">
-            </label>
+            {% if real_status() %}
+                <label for="real" class="small-label">实量:
+                    <input type="number" name="real" id="real" class="small-input" step="0.01">
+                </label>
+            {% endif %}
             <button class="delete  btn btn-danger" type="button">删除</button>
         </div>
     </div>
@@ -47,8 +49,8 @@
         <h1>{{ order.firm.name }}订单数据编辑</h1>
         <button type="button" id="add_input" class="btn btn-success">添加</button>
         <label for="deadline" class="datetime_width">
-             完成时间<i class="fa fa-clock-o"></i><input size="16" type="text" readonly class="form_datetime datetime_width"
-                                                     name="deadline" value="{{ order.deadline_to_string }}">
+            完成时间<i class="fa fa-clock-o"></i><input size="16" type="text" readonly class="form_datetime datetime_width"
+                                                    name="deadline" value="{{ order.deadline_to_string }}">
         </label>
         <div id="input">
             {% for form in order.forms %}
@@ -87,10 +89,12 @@
                         <input type="number" name="quantity" id="quantity" step="0.01" required class="small-input"
                                value="{{ form.quantity }}">
                     </label>
-                    <label for="real" class="small-label">实量:
-                        <input type="number" name="real" id="real" class="small-input"
-                               value="{{ form.real_quantity }}" step="0.01">
-                    </label>
+                    {% if real_status() %}
+                        <label for="real" class="small-label">实量:
+                            <input type="number" name="real" id="real" class="small-input"
+                                   value="{{ form.real_quantity }}" step="0.01">
+                        </label>
+                    {% endif %}
                     <button class="edit-delete btn btn-danger" type="button"
                             data-href="{{ url_for('recording.form_delete', form_id=form.id) }}">删除
                     </button>

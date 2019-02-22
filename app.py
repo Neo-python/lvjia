@@ -6,7 +6,6 @@ install_as_MySQLdb()
 app = create_app()
 db.init_app(app=app)
 
-
 from views.recording import recording
 from views.firm import firm
 from views.product import product
@@ -21,13 +20,16 @@ app.register_blueprint(billing)
 app.register_blueprint(clear)
 app.register_blueprint(admin)
 
-from plugins.common import orders_info
+from plugins.filters import filter_funcs
 
-app.add_template_global(orders_info, 'orders_info')
+for filter_ in filter_funcs:
+    app.add_template_global(filter_, filter_.__name__)
 
 
 @app.route('/', methods=['GET'])
 def index():
+    from flask import request
+    n = request.args.getlist('name')
     return render_template('base.html')
 
 

@@ -36,9 +36,11 @@
             <label for="quantity" class="small-label">数量:
                 <input type="number" name="quantity" id="quantity" step="0.01" required class="small-input">
             </label>
-            <label for="real" class="small-label">实量:
-                <input type="number" name="real" id="real" step="0.01" class="small-input">
-            </label>
+            {% if real_status() %}
+                <label for="real" class="small-label">实量:
+                    <input type="number" name="real" id="real" step="0.01" class="small-input">
+                </label>
+            {% endif %}
             <button class="delete  btn btn-danger" type="button">删除</button>
         </div>
     </div>

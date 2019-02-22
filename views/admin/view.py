@@ -1,16 +1,16 @@
-import datetime
+import random
 from flask import render_template, redirect, url_for, request, flash, session
 from views.admin import admin
 from models.admin import Admin
 from plugins.common import Permission
-from app import app
+from init import Redis
 
 
 @admin.route('/login/', methods=['GET'])
 def login():
     """登录页面"""
-    if session.get('admin'):
-        return 'ok'
+    if Permission.verify_login():
+        return redirect(url_for('index'))
     return render_template('admin/login.html')
 
 
@@ -20,17 +20,36 @@ def login_post():
     account = request.form.get('account')
     password = request.form.get('password')
     remember = request.form.get('remember')
+
     check_result = Admin.login(account=account, password=password)
+    session['admin'] = check_result.to_dict_()
+    session['session_id'] = str(random.random())
+
     if not check_result:
         flash(message='账户或密码错误', category='error')
         return redirect(url_for('admin.login'))
 
-    session['admin'] = check_result.to_dict_()
     if remember:
-        session_deadline = datetime.timedelta(days=7)
+        Redis.set(f'admin_{check_result.id}', value=session['session_id'], ex=60 * 60 * 24 * 7)
     else:
-        session_deadline = datetime.timedelta(hours=3)
-    app.permanent_session_lifetime = session_deadline
+        Redis.set(f'admin_{check_result.id}', value=session['session_id'], ex=60 * 60 * 3)
+
+    return redirect(url_for('index'))
+
+
+@admin.route('/get_real_status/', methods=['POST'])
+@Permission.need_login()
+def real_status():
+    """获取设置订单实数权限的视图函数
+    :return: 回到主页
+    """
+    password = request.form.get('password')
+    if True:
+        session_admin = session.get('admin')
+        session_id = session.get('session_id')
+        Redis.set(name=f'real_admin_{session_admin.get("id")}', value=session_id, ex=60 * 5)
+    else:
+        flash(message='Bad request', category='error')
     return redirect(url_for('index'))
 
 

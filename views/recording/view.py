@@ -36,6 +36,8 @@ def recording_post(company_id):
     quantity_ = request.form.getlist('quantity')
     unit_ = request.form.getlist('unit')
     real_ = request.form.getlist('real')
+    # 前台未提交实数表单时,自动填充响应数量实数
+    real_ = real_ if real_ else [None for _ in range(len(product_))]
 
     for person, product, price, quantity, unit, real in zip(personnel_, product_, price_, quantity_, unit_, real_):
         OrderForm(person_id=person, product_id=product, price=price, quantity=quantity,
@@ -75,21 +77,30 @@ def order_edit_post(order_id):
     quantity_ = request.form.getlist('quantity')
     unit_ = request.form.getlist('unit')
     real_ = request.form.getlist('real')
+    # 前台未提交实数表单时,自动填充响应数量实数
+    real_ = real_ if real_ else [None for _ in range(len(product_))]
 
     # 对齐数据
     for i, person, product, price, quantity, unit, real in zip(ids, personnel_, product_, price_, quantity_, unit_,
                                                                real_):
         if i:
             # 更新order form 已存数据信息
-            OrderForm.query.filter_by(id=int(i)).update({
-                'person_id': person,
-                'product_id': product,
-                'price': price,
-                'quantity': quantity,
-                'unit_id': unit,
-                'real_quantity': real
-
-            })
+            form = OrderForm.query.filter_by(id=int(i)).first()
+            form.person_id = person
+            form.product_id = product
+            form.price = price
+            form.quantity = quantity
+            form.unit_id = unit
+            form.real_quantity = form._init_real_quantity(real)
+            # OrderForm.query.filter_by(id=int(i)).update({
+            #     'person_id': person,
+            #     'product_id': product,
+            #     'price': price,
+            #     'quantity': quantity,
+            #     'unit_id': unit,
+            #     'real_quantity': real
+            #
+            # })
         else:
             # 新增order form
             OrderForm(person_id=person, product_id=product, price=price, quantity=quantity, order_id=order_id,
