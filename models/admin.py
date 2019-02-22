@@ -1,4 +1,5 @@
 """管理员层模型"""
+import hashlib
 from werkzeug.security import generate_password_hash, check_password_hash
 from models import db, Common
 
@@ -12,6 +13,7 @@ class Admin(Common, db.Model):
     password = db.Column(db.String(length=255), nullable=False, comment='密码')
     level = db.Column(db.SMALLINT, nullable=False, comment='权限等级,0:普通权限.1:最高权限')
     phone = db.Column(db.String(length=11), nullable=False, comment='手机号')
+    token = db.Column(db.String(length=32), nullable=False, comment='二级密码')
 
     def set_password(self, password: str):
         """设置密码
@@ -46,3 +48,11 @@ class Admin(Common, db.Model):
             return admin
         else:
             return False
+
+    @staticmethod
+    def verify_token(token: str, self_token: str) -> bool:
+        """验证二级密码"""
+        md5 = hashlib.md5()
+        md5.update(token.encode())
+        hash_token = md5.hexdigest()
+        return hash_token == self_token

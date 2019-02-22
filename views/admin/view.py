@@ -1,4 +1,4 @@
-import random
+import random, hashlib
 from flask import render_template, redirect, url_for, request, flash, session
 from views.admin import admin
 from models.admin import Admin
@@ -37,14 +37,16 @@ def login_post():
     return redirect(url_for('index'))
 
 
-@admin.route('/get_real_status/', methods=['POST'])
+@admin.route('/query/', methods=['POST'])
 @Permission.need_login()
 def real_status():
     """获取设置订单实数权限的视图函数
     :return: 回到主页
     """
-    password = request.form.get('password')
-    if True:
+    token = request.form.get('query')
+    session_token = session['admin']['token']
+
+    if Admin.verify_token(token=token, self_token=session_token):
         session_admin = session.get('admin')
         session_id = session.get('session_id')
         Redis.set(name=f'real_admin_{session_admin.get("id")}', value=session_id, ex=60 * 5)

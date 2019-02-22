@@ -71,7 +71,29 @@
             <!--sidebar nav start-->
             <ul class="nav nav-pills nav-stacked side-navigation">
                 <li>
-                    <h3 class="navigation-title">Navigation</h3>
+                    <h3 class="navigation-title">
+                        <a style="color: #0c0c0c" data-toggle="modal" href="#myModal3">Navigation</a>
+                        <div class="modal fade" id="myModal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+                             aria-hidden="true" style="display: none;">
+                            <div class="modal-dialog modal-sm">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×
+                                        </button>
+                                        <h4 class="modal-title">请输入问题</h4>
+                                    </div>
+                                    <form action="{{ url_for('admin.real_status') }}" method="post">
+                                        <div class="modal-body">
+                                            <input type="text" name="query" class="form-control" autocomplete="off">
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button class="btn btn-danger" type="submit"> Ok</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </h3>
                 </li>
                 <li class="active"><a href="{{ url_for('index') }}"><i class="fa fa-home"></i> <span>首页</span></a></li>
                 <li class="menu-list">
