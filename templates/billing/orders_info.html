@@ -2,6 +2,7 @@
     body {
         padding: 25px;
     }
+
     .order-info {
         float: left;
         display: inline-block;
@@ -30,10 +31,12 @@
     .summary-unit {
         font-size: large;
     }
-    .summary-wrapper{
+
+    .summary-wrapper {
         display: flex;
     }
-    .summary-info{
+
+    .summary-info {
         margin-right: 20px;
     }
 </style>
@@ -64,3 +67,8 @@
         </div>
     {% endfor %}
 </div>
+<script>
+    window.onload = function () {
+        window.print();
+    }
+</script>
