@@ -35,5 +35,5 @@ def orders_info():
     sort = [(len(order_.forms), order_) for order_ in orders]
     sort.sort(key=lambda x: x[0], reverse=True)
     orders = [item[1] for item in sort]
-    form_info = OrdersInfo(orders=orders).collect_quantity()
+    form_info = OrdersInfo(orders=orders, real=True).collect_quantity()
     return render_template('billing/orders_info.html', orders=orders, form_info=form_info)

@@ -61,9 +61,10 @@ class OrmVerity:
 class OrdersInfo:
     """订单信息集合"""
 
-    def __init__(self, orders: list):
+    def __init__(self, orders: list, real: bool = False):
         self.orders = orders if isinstance(orders, Iterable) else [orders]
         self.form_info = dict()
+        self.real = real
 
     def collect_quantity(self) -> dict:
         """计算多个订单产品数量"""
@@ -73,8 +74,26 @@ class OrdersInfo:
 
     def forms(self, order):
         """订单抽取单条表单"""
-        for form in order.forms:
-            self.update(form=form)
+        if not self.real:
+            for form in order.forms:
+                self.update(form=form)
+        else:
+            for form in order.forms:
+                self.real_update(form=form)
+
+    def real_update(self, form):
+        """更新实数"""
+        multiple = form.unit.multiple / form.unit.parent_unit.multiple
+        if self.form_info.get(form.product.name):
+            """已有记录的产品"""
+            # 订单记录数加上 --> 订单数量乘以订单所用单位倍数
+            self.form_info[form.product.name]['quantity'] += form.real_quantity * multiple
+        else:
+            # 没有记录的产品
+            self.form_info[form.product.name] = {
+                'unit': form.unit.parent_unit.name,
+                'quantity': form.real_quantity * multiple  # 订单数量乘以订单所用单位倍数
+            }
 
     def update(self, form):
         """更新数据"""
