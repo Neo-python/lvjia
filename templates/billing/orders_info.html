@@ -1,4 +1,14 @@
 <style>
+    @media print {
+        .print-btn {
+            display: none;
+        }
+
+        .cancel-btn {
+            display: none;
+        }
+    }
+
     body {
         padding: 25px;
     }
@@ -40,13 +50,17 @@
         margin-right: 20px;
     }
 </style>
+<div>
+    <button onclick="history.back(-1)" class="cancel-btn">取消/返回</button>
+    <button onclick="window.print()" class="print-btn">打印</button>
+</div>
 <div class="wrapper-order-info">
     {% for order in orders %}
         <div class="order-info">
             <span class="firm-name">{{ order.firm.name }}</span>
             <span>{{ order.deadline_format('%Y-%m-%d %H:%M', True) }}</span><br>
             {% if order.remarks %}
-                <span style="color: red">{{ order.remarks }}</span><br>
+                <span>{{ order.remarks }}</span><br>
             {% endif %}
             {% for form in order.forms %}
                 <span>{{ form.person.name }}</span>
