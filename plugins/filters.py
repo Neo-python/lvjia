@@ -20,6 +20,25 @@ def real_status():
     return False
 
 
+def form_total_price(order, real: bool = False):
+    """单项表单总价计算"""
+    price = 0.0
+    for form in order.forms:
+        if real:
+            price += float(form.real_quantity * form.price)
+        else:
+            price += float(form.quantity * form.price)
+    return price
+
+
+def orders_total_price(orders, real: bool = False):
+    """订单集合总价"""
+    price = 0.0
+    for order in orders:
+        price += form_total_price(order=order, real=real)
+    return price
+
+
 def blueprint(aims: str):
     """判断当前蓝图与目标蓝图是否一致
     :return: 'active' or ''
@@ -30,8 +49,10 @@ def blueprint(aims: str):
         return ''
 
 
-filter_funcs = (
+funcs = (
     orders_info,
     real_status,
-    blueprint
+    blueprint,
+    form_total_price,
+    orders_total_price
 )

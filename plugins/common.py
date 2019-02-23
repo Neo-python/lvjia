@@ -61,6 +61,7 @@ class OrmVerity:
 
 class OrdersInfo:
     """订单信息集合
+    OrdersInfo(orders=orders, real=xbool).collect_quantity()
     :param real: 订单信息汇总报表打印
     """
 

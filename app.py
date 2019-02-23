@@ -20,10 +20,10 @@ app.register_blueprint(billing)
 app.register_blueprint(clear)
 app.register_blueprint(admin)
 
-from plugins.filters import filter_funcs
+from plugins.filters import funcs
 
-for filter_ in filter_funcs:
-    app.add_template_global(filter_, filter_.__name__)
+for func in funcs:
+    app.add_template_global(func, func.__name__)
 
 
 @app.route('/', methods=['GET'])

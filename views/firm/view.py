@@ -1,3 +1,4 @@
+import datetime
 from flask import render_template, request, redirect, url_for
 from plugins.common import page_generator, Permission
 from views.firm import firm
@@ -116,13 +117,43 @@ def people_delete(people_id):
 
 
 @firm.route('/<int:firm_id>/order_list/', methods=['GET'])
+@Permission.need_login()
 def order_list(firm_id):
-    """公司订单列表"""
+    """公司订单列表
+    page:页码
+    per_page:每页数据条数
+    start:起始时间
+    end:结束时间
+    query:orm查询对象
+    orders:sqlalchemy分页器
+    data:模板渲染内置参数
+        page:分页栏 type -> html_string
+        args:搜索条件表单参数
+    :param firm_id: 公司编号
+    """
+
+    # 收集表单参数
     page = int(request.args.get('page', 1))
-    orders = Order.query.filter_by(firm_id=firm_id).order_by(Order.id).paginate(page=page, per_page=10)
+    per_page = int(request.args.get('per_page', 0))
+    if per_page == 0:
+        per_page = Order.query.filter_by(firm_id=firm_id).count()
+
+    start = request.args.get('start')
+    end = request.args.get('end')
+
+    # 选择查询条件
+    query = Order.query.filter_by(firm_id=firm_id).order_by(Order.id.desc())
+    if start:
+        query = query.filter(Order.datetime > datetime.datetime.strptime(start, '%Y-%m-%d'))
+    if end:
+        query = query.filter(Order.datetime < datetime.datetime.strptime(end, '%Y-%m-%d'))
+
+    # 聚合数据,渲染模板.
+    orders = query.paginate(page=page, per_page=per_page)
     data = {
         'firm_id': firm_id,
         'orders': orders.items,
-        'page': page_generator(page, max_num=orders.pages, url=url_for('firm.order_list', firm_id=firm_id))
+        'page': page_generator(page, max_num=orders.pages, url=url_for('firm.order_list', firm_id=firm_id)),
+        'args': request.args.to_dict()
     }
     return render_template('firm/order_list.html', **data)

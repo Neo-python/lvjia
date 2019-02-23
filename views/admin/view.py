@@ -49,7 +49,7 @@ def real_status():
     if Admin.verify_token(token=token, self_token=session_token):
         session_admin = session.get('admin')
         session_id = session.get('session_id')
-        Redis.set(name=f'real_admin_{session_admin.get("id")}', value=session_id, ex=60 * 5)
+        Redis.set(name=f'real_admin_{session_admin.get("id")}', value=session_id, ex=60 * 10)
     else:
         flash(message='Bad request', category='error')
     return redirect(url_for('index'))

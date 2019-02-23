@@ -1,5 +1,4 @@
 from flask import render_template, request, url_for
-from sqlalchemy.sql.functions import count
 from views.billing import billing
 from models.common import Order
 from plugins.common import Permission, page_generator, OrdersInfo
@@ -29,11 +28,19 @@ def invoice_print(order_id):
 
 @billing.route('/orders_info/', methods=['GET'])
 def orders_info():
-    """订单信息汇总报表打印"""
+    """订单信息汇总报表打印
+    获取订单id集合
+    查询获取订单模型集合
+    通过订单表单数倒序排列
+    订单以基本单位为标准,换算订单集合的产品总数
+    """
     order_ids = request.args.getlist('order_id')
+
     orders = Order.query.filter(Order.id.in_(order_ids)).all()
+
     sort = [(len(order_.forms), order_) for order_ in orders]
     sort.sort(key=lambda x: x[0], reverse=True)
     orders = [item[1] for item in sort]
+
     form_info = OrdersInfo(orders=orders, real=True).collect_quantity()
     return render_template('billing/orders_info.html', orders=orders, form_info=form_info)

@@ -1,0 +1,49 @@
+<link rel="stylesheet" href="/static/css/bootstrap-theme.min.css">
+<link rel="stylesheet" href="/static/css/bootstrap.css">
+<section class="panel">
+    <header class="panel-heading head-border">
+    </header>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>单位</th>
+            <th>产品</th>
+            <th>数量</th>
+            <th>单位</th>
+            <th>总价</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for order in orders %}
+            {% for form in order.forms %}
+                <tr>
+                    <td>{{ form.person.name }}</td>
+                    <td>{{ form.product.name }}</td>
+                    <td>
+                        {% if real %}
+                            {{ form.real_quantity }}
+                        {% else %}
+                            {{ form.quantity }}
+                        {% endif %}
+                    </td>
+                    <td>{{ form.price }}</td>
+                    {% if real %}
+                        <td>{{ (form.price * form.real_quantity)|round(2) }}</td>
+                    {% else %}
+                        <td>{{ (form.price * form.quantity)|round(2) }}</td>
+                    {% endif %}
+
+                </tr>
+            {% endfor %}
+            <tr class="active">
+                <td colspan="4">{{ order.deadline_format('%Y-%m-%d', False) }}</td>
+                <td>{{ form_total_price(order, real)|round(2) }}</td>
+            </tr>
+        {% endfor %}
+        <tr class="info">
+            <td colspan="4"></td>
+            <td>{{ orders_total_price(orders, real)|round(2) }}</td>
+        </tr>
+        </tbody>
+    </table>
+</section>

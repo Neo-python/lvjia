@@ -1,39 +1,74 @@
 {% extends 'base.html' %}
 {% block head %}
-
+    <style>
+        .margin-right {
+            margin-right: 10px;
+        }
+    </style>
 {% endblock %}
 {% block body %}
     <div class="col-md-12">
-        <a href="{{ url_for('firm.company_index', firm_id=firm_id) }}" class="btn btn-info"> <i
+        <a href="{{ url_for('firm.company_index', firm_id=firm_id) }}" class="btn btn-warning"> <i
                 class="fa fa-long-arrow-left"></i> 回到公司主页</a>
+        <button class="btn btn-info float-right" id="generate"><i class="fa fa-print"></i><b>订单</b>汇总信息</button>
+        {% if real_status() %}
+            <button class="btn btn-danger float-right margin-right" id="generate-real">
+                <i class="fa fa-print"></i><b>实量</b>汇总信息
+            </button>
+        {% endif %}
         <div class="row">
             <div class="col-lg-12">
                 <section class="panel">
-                    <header class="panel-heading head-border">
-                        订单列表
-                    </header>
+
+                    <form action="">
+                        <header class="panel-heading head-border">
+                            订单列表
+                            <button class="btn btn-info float-right" type="submit">搜索</button>
+                            <label for="per_page" class="float-right" style="display: flex">
+                                <select name="per_page" id="per_page" class="form-control">
+                                    <option value="10" {% if args.per_page == '10' %}selected{% endif %}>10条</option>
+                                    <option value="20" {% if args.per_page == '20' %}selected{% endif %}>20条</option>
+                                    <option value="0" {% if args.per_page == '0' %}selected{% endif %}>全部</option>
+                                </select>
+                            </label>
+                            <label for="end" class="float-right">终止时间:
+                                <input type="text" name="end" class="form_datetime datetime_width" readonly id="end"
+                                       value="{{ args.end }}"></label>
+                            <label for="start" class="float-right">起始时间:
+                                <input type="text" name="start" class="form_datetime datetime_width" readonly id="start"
+                                       value="{{ args.start }}"></label>
+                            <button class="btn btn-danger float-right" type="button"
+                                    onclick="window.location.href ='{{ url_for("firm.order_list", firm_id=firm_id) }}'">
+                                清除
+                            </button>
+                        </header>
+                    </form>
                     <table class="table table-striped custom-table table-hover">
                         <thead>
                         <tr>
+                            <th><input type="checkbox" id="all_select"> <label for="all_select">全选</label></th>
                             <th><i class="fa fa-bookmark-o"></i> 时间</th>
                             <th class="hidden-xs"><i class="fa fa-building-o"></i> 订单内容</th>
                             <th><i class="fa fa-bar-chart-o"></i> 备注信息</th>
                             <th class="hidden-xs"><i class="fa fa-cogs"></i> 操作</th>
                         </tr>
                         </thead>
-                        <tbody>
-                        {% for order in orders %}
-                            <tr>
-                                <td>{{ order.deadline_format('%m-%d', False) }}</td>
-                                <td>{{ orders_info(order)|join(' | ') }}
-                                    <br>{{ order.peoples_info().keys()|join(' | ') }}</td>
-                                <td>{{ order.remarks }}</td>
-                                <td>
-                                    <a href="{{ url_for('recording.order_edit', order_id=order.id) }}"
-                                       class="btn btn-primary btn-xs"><i class="fa fa-edit"></i>编辑</a>
-                                </td>
-                            </tr>
-                        {% endfor %}
+                        <tbody id="tbody">
+                        <form action="{{ url_for('clear.orders_info') }}" id="orders-form" method="post">
+                            {% for order in orders %}
+                                <tr>
+                                    <td><input type="checkbox" value="{{ order.id }}" name="order_ids"></td>
+                                    <td>{{ order.deadline_format('%m-%d', False) }}</td>
+                                    <td>{{ orders_info(order)|join(' | ') }}
+                                        <br>{{ order.peoples_info().keys()|join(' | ') }}</td>
+                                    <td>{{ order.remarks }}</td>
+                                    <td>
+                                        <a href="{{ url_for('recording.order_edit', order_id=order.id) }}"
+                                           class="btn btn-primary btn-xs"><i class="fa fa-edit"></i>编辑</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </form>
                         </tbody>
                     </table>
                 </section>
@@ -43,5 +78,31 @@
     </div>
 {% endblock %}
 {% block script %}
-
+    <script type="text/javascript">
+        $(".form_datetime").datetimepicker({
+            format: 'yyyy-mm-dd',
+            language: 'cn',
+            todayBtn: 'linked',
+            autoclose: true,
+            minView: 2
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('#all_select').click(function () {
+                if (this.checked) {
+                    $('#tbody :checkbox').prop('checked', true)
+                } else {
+                    $('#tbody :checkbox').prop('checked', false)
+                }
+            });
+            $('#generate').click(function () {
+                $('#orders-form').submit()
+            });
+            $("#generate-real").click(function () {
+                $('#orders-form').attr('action', "{{ url_for('clear.orders_info', model='real') }}");
+                $('#orders-form').submit()
+            });
+        })
+    </script>
 {% endblock %}

@@ -62,4 +62,12 @@
     {% with add = 5 %}
         {% include 'recording/recording_script.html' %}
     {% endwith %}
+    <script type="text/javascript">
+        $(".form_datetime").datetimepicker({
+            format: 'yyyy-mm-dd hh:ii',
+            language: 'cn',
+            todayBtn: 'linked',
+            autoclose: true,
+        });
+    </script>
 {% endblock %}
