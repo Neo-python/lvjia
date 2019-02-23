@@ -8,11 +8,14 @@
 </script>
 <script>
     $(document).ready(function () {
+        let units = {{ firm.product_data|safe }};
+
+
         function add_input() {
             var template = $('#template');
             var input = $('#input');
             input.append(template.html())
-        }
+        };
 
         for (var i = 0; i < {{ add }}; i++) {
             add_input()
@@ -24,20 +27,41 @@
         });
 
         $('.product').live('change', function () {
-            // 选中产品发生改变触发,修改对应位置价格值,然后激活数量输入框
-            var price = $(this).find("option:selected").attr('data-price');
-            var unit_id = $(this).find("option:selected").attr('data-unit_id');
-            var unit_name = $(this).find("option:selected").attr('data-unit_name');
-            var parents = $(this).parent().siblings();
-            var unit_input = parents.find('.unit');
-            var unit_span = parents.find('.unit_span');
-            var price_input = parents.find('.price');
-            var quantity_input = parents.find('#quantity');
-            price_input.attr('value', price); // 变更选中项价格
-            quantity_input.focus(); // 激活数量输入框
-            unit_input.attr('value', unit_id); // 设置单位
-            unit_span.html(unit_name) // 设置单位
+            let parents = $(this).parent().siblings();
+            let product_id = $(this).attr('value');
+            let unit_select = parents.find('.unit-select');
+            unit_select.empty();
+            console.log(units)
+            console.log(units[product_id].units)
+            $.each(units[product_id].units, function (key, item) {
+                unit_select.append(
+                    '<option value="' + key + '" data-price="' + item.price + '">' + item.name + '</option>'
+                )
+            });
 
+            unit_select.trigger('change');
+
+            {#var unit_id = $(this).find("option:selected").attr('data-unit_id');#}
+            {#var unit_name = $(this).find("option:selected").attr('data-unit_name');#}
+            // 选中产品发生改变触发,修改对应位置价格值,然后激活数量输入框
+            {#var unit_input = parents.find('.unit');#}
+            {#var unit_span = parents.find('.unit_span');#}
+            {#var price_input = parents.find('.price');#}
+
+            price_input.attr('value', price); // 变更选中项价格
+
+            {#unit_input.attr('value', unit_id); // 设置单位#}
+            {#unit_span.html(unit_name) // 设置单位#}
+
+        });
+        $('.unit-select').live('change', function () {
+            // 单位改变事件
+            let parents = $(this).parent().siblings();
+            let price = $(this).find("option:selected").attr('data-price');
+            let price_input = parents.find('.price');
+            price_input.attr('value', price);
+            let quantity_input = parents.find('#quantity');
+            quantity_input.focus(); // 激活数量输入框
         });
 
         $('.delete').live('click', function () {

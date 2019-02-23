@@ -13,7 +13,7 @@ class Firm(Common, db.Model):
     address = db.Column(db.String(length=255), default='', comment='公司/单位地址')
 
     personnel = db.relationship('People', lazy='select', cascade="all, delete-orphan", backref='firm')
-    EP = db.relationship('ExternalPrice', lazy='select', cascade="all, delete-orphan", backref='firm')
+    EP = db.relationship('ExternalPrice', lazy='dynamic', cascade="all, delete-orphan", backref='firm')
     orders = db.relationship('Order', lazy='select', cascade="all, delete-orphan", backref='firm')
 
     def __init__(self, name: str, address: str):
@@ -23,9 +23,27 @@ class Firm(Common, db.Model):
     def init_external_price(self):
         """初始化所有产品的公司专价,只允许在新建公司时执行一次"""
         for product in Product.query.all():
-            ExternalPrice(product_id=product.id, company_id=self.id, price=product.price,
-                          unit_id=product.unit_id).direct_add_()
+            for unit in product.units:
+                ExternalPrice(product.id, self.id, unit.price, unit.id).direct_add_()
         return self.direct_commit_()
+
+    @property
+    def ep_all(self):
+        """返回公司专价"""
+        return self.EP.all()
+
+    @property
+    def product_data(self):
+        """得到所有产品数据"""
+        result = dict()
+        for i in self.EP:
+            if result.get(i.product_id):
+                result[i.product_id]['units'].update({i.unit_id: {'name': i.unit.name, 'price': float(i.price)}})
+
+            else:
+                result[i.product_id] = {'name': i.product.name,
+                                        'units': {i.unit_id: {'name': i.unit.name, 'price': float(i.price)}}}
+        return result
 
 
 class Product(Common, db.Model):
@@ -34,31 +52,16 @@ class Product(Common, db.Model):
     id = db.Column(db.Integer, index=True, primary_key=True)
 
     name = db.Column(db.String(length=50), nullable=False, comment='产品名')
-    price = db.Column(db.DECIMAL(precision=9, decimal_return_scale=2), default=0.00, nullable=False, comment='产品单价')
-    unit_id = db.Column(db.SMALLINT, db.ForeignKey('product_unit.id'), nullable=False, comment='产品单位ID')
 
-    EPS = db.relationship('ExternalPrice', lazy='select', cascade="all, delete-orphan", backref='product')
-    all_order = db.relationship('OrderForm', lazy='select', cascade="all, delete-orphan", backref='product')
-    unit = db.relationship('ProductUnit', lazy='select')
+    units = db.relationship('ProductUnit', lazy='select', backref='product')
 
-    def __init__(self, name: str, price: float, unit_id: int = None):
+    def __init__(self, name: str):
         self.name = name
-        self.price = price
-        self.unit_id = unit_id
 
     @property
     def unit_all(self):
         """可用计量单位"""
-        return ProductUnit.query.filter(
-            or_(ProductUnit.id == self.unit_id, ProductUnit.parent_id == self.unit_id)).all()
-
-    def broadcast(self):
-        """新建产品完成后,只允许执行一次.将数据更新每家公司的专价
-        broadcast:广播
-        """
-        for company in Firm.query.all():
-            ExternalPrice(product_id=self.id, company_id=company.id, price=self.price,
-                          unit_id=self.unit_id).direct_commit_()
+        return ProductUnit.query.filter(or_(ProductUnit.product_id == self.id)).all()
 
 
 class ProductUnit(Common, db.Model):
@@ -66,28 +69,34 @@ class ProductUnit(Common, db.Model):
     __tablename__ = 'product_unit'
     id = db.Column(db.Integer, index=True, primary_key=True)
 
-    name = db.Column(db.String(length=50), nullable=False, comment='产品名')
-    multiple = db.Column(db.DECIMAL(precision=9, decimal_return_scale=2), default=1, nullable=False, comment='最小单位的倍数')
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False, comment='产品单位')
+    name = db.Column(db.String(length=50), nullable=False, comment='单位名')
+    price = db.Column(db.DECIMAL(9, 2), default=0, nullable=False, comment='价格')
+    multiple = db.Column(db.DECIMAL(precision=9, decimal_return_scale=2), default=1, nullable=False, comment='与父级单位倍率')
     parent_id = db.Column(db.SMALLINT, db.ForeignKey('product_unit.id'), default=0, nullable=False,
                           comment='单位等级,0:基础单位,其他:父级单位.')
 
     subordinates = db.relationship('ProductUnit', lazy='select')
 
-    def __init__(self, name: str, multiple: float, parent_id: int):
+    def __init__(self, product_id, name: str, price: float, multiple: float, parent_id: int):
+        self.product_id = product_id
         self.name = name
+        self.price = price
         self.multiple = multiple
         self.parent_id = parent_id
 
-    @staticmethod
-    def basic_unit():
-        """返回基础单位"""
-        return ProductUnit.query.filter(ProductUnit.parent_id == 0).all()
+    def broadcast(self):
+        """新建产品完成后,只允许执行一次.将数据更新每家公司的专价
+        broadcast:广播
+        """
+        for firm in Firm.query.all():
+            ExternalPrice(self.product_id, firm.id, self.price, self.id).direct_commit_()
 
     @property
     def parent(self):
         """上级对象"""
         if getattr(self, '_parent', None) or self.parent_id is not 0:
-            #  查询到上级对象时,缓存上级对象
+            # 查询到上级对象时,缓存上级对象
             self._parent = ProductUnit.query.get(self.parent_id)
             return self._parent
         else:
@@ -109,15 +118,15 @@ class People(Common, db.Model):
 
     name = db.Column(db.String(length=50), nullable=False, comment='人名')
     telephone = db.Column(db.String(length=13), default='', nullable=False, comment='联系方式')
-    company_id = db.Column(db.Integer, db.ForeignKey('firm.id'), nullable=False)
+    firm_id = db.Column(db.Integer, db.ForeignKey('firm.id'), nullable=False)
     remarks = db.Column(db.String(length=255), default='', comment='人员备注')
 
     order_form_all = db.relationship('OrderForm', lazy='select', backref='person')
 
-    def __init__(self, name: str, telephone: str, company_id: int, remarks: str = None):
+    def __init__(self, name: str, telephone: str, firm_id: int, remarks: str = None):
         self.name = name
         self.telephone = telephone
-        self.company_id = company_id
+        self.firm_id = firm_id
         self.remarks = remarks
 
 
@@ -126,15 +135,17 @@ class ExternalPrice(Common, db.Model):
     __tablename__ = 'external_price'
     id = db.Column(db.Integer, index=True, primary_key=True)
 
+    firm_id = db.Column(db.Integer, db.ForeignKey('firm.id'), nullable=False)
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
-    company_id = db.Column(db.Integer, db.ForeignKey('firm.id'), nullable=False)
     price = db.Column(db.DECIMAL(precision=9, decimal_return_scale=2), default=0.00, nullable=False, comment='产品单价')
     unit_id = db.Column(db.SMALLINT, db.ForeignKey('product_unit.id'), nullable=False, comment='产品单位ID')
-    unit = db.relationship('ProductUnit', lazy='select')
 
-    def __init__(self, product_id: int, company_id: int, price: float, unit_id: int):
+    unit = db.relationship('ProductUnit', lazy='select')
+    product = db.relationship('Product', lazy='select')
+
+    def __init__(self, product_id: int, firm_id: int, price: float, unit_id: int):
         self.product_id = product_id
-        self.company_id = company_id
+        self.firm_id = firm_id
         self.price = price
         self.unit_id = unit_id
 
@@ -153,6 +164,7 @@ class OrderForm(Common, db.Model):
     real_quantity = db.Column(db.DECIMAL(9, 2), nullable=False, comment='实际发货数量')
 
     unit = db.relationship('ProductUnit', lazy='select')
+    product = db.relationship('Product', lazy='select')
 
     def __init__(self, person_id: int, product_id: int, price: float, quantity: float, order_id: int, unit_id: int,
                  real_quantity: float = None):
@@ -181,15 +193,15 @@ class Order(Common, db.Model):
     __tablename__ = 'order'
     id = db.Column(db.Integer, index=True, primary_key=True)
 
-    company_id = db.Column(db.Integer, db.ForeignKey('firm.id'), nullable=False, comment='公司编号')
+    firm_id = db.Column(db.Integer, db.ForeignKey('firm.id'), nullable=False, comment='公司编号')
     remarks = db.Column(db.String(length=255), default='', nullable=False, comment='订单备注')
     datetime = db.Column(db.TIMESTAMP, name='datetime', nullable=False, comment='订单创建日期')
     deadline = db.Column(db.Date, comment='订单期限')
 
     forms = db.relationship('OrderForm', lazy='select', cascade="all, delete-orphan", backref='order')
 
-    def __init__(self, company_id: int, remarks: str, deadline=None):
-        self.company_id = company_id
+    def __init__(self, firm_id: int, remarks: str, deadline=None):
+        self.firm_id = firm_id
         self.remarks = OrmVerity.verify_null_value(value=remarks, result=None)
         self.deadline = OrmVerity.verify_deadline(deadline=deadline)
 

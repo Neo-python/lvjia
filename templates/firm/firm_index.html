@@ -7,20 +7,20 @@
                     <div class="team-member-wrap">
                         <div class="team-member-info">
                             <div class="action-set">
-                                <h2>{{ company.name }}</h2>
+                                <h2>{{ firm.name }}</h2>
                             </div>
                             <div class="team-title">
-                                <a href="{{ url_for('firm.company_edit', company_id=company.id) }}"
+                                <a href="{{ url_for('firm.company_edit', firm_id=firm.id) }}"
                                    class="btn  btn-block addon-btn m-b-10 btn-warning">
                                     <i class="fa fa-pencil-square-o"></i>
                                     编辑公司信息
                                 </a>
-                                <a href="{{ url_for('firm.order_list', company_id=company.id) }}"
+                                <a href="{{ url_for('firm.order_list', firm_id=firm.id) }}"
                                    class="btn btn-default btn-block addon-btn m-b-10 color-black firm-a">
                                     <i class="fa fa-jpy"></i>
                                     订单列表
                                 </a>
-                                <a href="{{ url_for('product.fixed_price', company_id=company.id) }}"
+                                <a href="{{ url_for('product.fixed_price', firm_id=firm.id) }}"
                                    class="btn btn-danger btn-block addon-btn m-b-10">
                                     <i class="fa fa-jpy"></i>
                                     产品定价
@@ -35,7 +35,7 @@
                                 {#                               左侧中间#}
                             </div>
                             <div class="status">
-                                <h6>{{ company.address }}</h6>
+                                <h6>{{ firm.address }}</h6>
 
                             </div>
                         </div>
@@ -51,7 +51,7 @@
                 </header>
                 <div class="post-info">
                     <ul class="team-list cycle-pager external" id="no-template-pager">
-                        {% for people in company.personnel %}
+                        {% for people in firm.personnel %}
                             <li>
                                 <a href="{{ url_for('firm.people_edit', people_id=people.id) }}">
                                             <span class="thumb-small">
@@ -68,7 +68,7 @@
                     </ul>
                     <div class="add-more-member">
                         <a href="javascript:;" class=" ">&nbsp;</a>
-                        <a href="{{ url_for('firm.people_new', company_id=company.id) }}"
+                        <a href="{{ url_for('firm.people_new', firm_id=firm.id) }}"
                            class="btn btn-success firm-new" style="color: #0c0c0c">
                             新增联系人
                         </a>

@@ -12,29 +12,29 @@ def index():
     return render_template('recording/index.html', firms=Firm.query.all())
 
 
-@recording.route('/<int:company_id>/', methods=['GET'])
+@recording.route('/<int:firm_id>/', methods=['GET'])
 @Permission.need_login()
-def recording_page(company_id):
+def recording_page(firm_id):
     """录单页"""
     now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M')
-    return render_template('recording/recording.html', company=Firm.query.get(company_id), now=now)
+    return render_template('recording/recording.html', firm=Firm.query.get(firm_id), now=now)
 
 
-@recording.route('/<int:company_id>/', methods=['POST'])
+@recording.route('/<int:firm_id>/', methods=['POST'])
 @Permission.need_login()
-def recording_post(company_id):
+def recording_post(firm_id):
     """录单.表单提交"""
     # 创建订单备注信息
     remarks = request.form.get('remarks')
     deadline = request.form.get('deadline')
-    order = Order(company_id=company_id, remarks=remarks, deadline=deadline).direct_flush_()
+    order = Order(firm_id=firm_id, remarks=remarks, deadline=deadline).direct_flush_()
 
     # 创建订单具体信息
     personnel_ = request.form.getlist('personnel')
     product_ = request.form.getlist('product_id')
     price_ = request.form.getlist('price')
     quantity_ = request.form.getlist('quantity')
-    unit_ = request.form.getlist('unit')
+    unit_ = request.form.getlist('unit_id')
     real_ = request.form.getlist('real')
     # 前台未提交实数表单时,自动填充响应数量实数
     real_ = real_ if real_ else [None for _ in range(len(product_))]
@@ -51,7 +51,8 @@ def recording_post(company_id):
 def order_edit(order_id):
     """订单修改"""
     order = Order.query.get(order_id)
-    return render_template('recording/order_edit.html', order=order)
+
+    return render_template('recording/order_edit.html', order=order, firm=order.firm)
 
 
 @recording.route('/edit/<int:order_id>/', methods=['POST'])
@@ -75,7 +76,7 @@ def order_edit_post(order_id):
     product_ = request.form.getlist('product_id')
     price_ = request.form.getlist('price')
     quantity_ = request.form.getlist('quantity')
-    unit_ = request.form.getlist('unit')
+    unit_ = request.form.getlist('unit_id')
     real_ = request.form.getlist('real')
     # 前台未提交实数表单时,自动填充响应数量实数
     real_ = real_ if real_ else [None for _ in range(len(product_))]
@@ -92,15 +93,6 @@ def order_edit_post(order_id):
             form.quantity = quantity
             form.unit_id = unit
             form.real_quantity = form._init_real_quantity(real)
-            # OrderForm.query.filter_by(id=int(i)).update({
-            #     'person_id': person,
-            #     'product_id': product,
-            #     'price': price,
-            #     'quantity': quantity,
-            #     'unit_id': unit,
-            #     'real_quantity': real
-            #
-            # })
         else:
             # 新增order form
             OrderForm(person_id=person, product_id=product, price=price, quantity=quantity, order_id=order_id,

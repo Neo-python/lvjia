@@ -4,15 +4,15 @@
 {% endblock %}
 {% block body %}
     <div class="row state-overview">
-        {% for company in firms %}
-            <a class="col-lg-3 col-sm-6 company-div" href="{{ url_for('recording.recording_page', company_id=company.id) }}">
+        {% for firm in firms %}
+            <a class="col-lg-3 col-sm-6 company-div" href="{{ url_for('recording.recording_page', firm_id=firm.id) }}">
                 <section class="panel green">
                     <div class="symbol ">
                         <i class="fa fa-university"></i>
                     </div>
                     <div class="value white">
-                        <h3>{{ company.name }}</h3>
-                        <h6>{{ company.address }}</h6>
+                        <h3>{{ firm.name }}</h3>
+                        <h6>{{ firm.address }}</h6>
                     </div>
                 </section>
             </a>

@@ -16,20 +16,39 @@
                                    value="{{ product.name }}">
                         </div>
                     </div>
-                    <div class=" form-group">
-                        <label>产品基础单位:</label><span>{{ product.unit.name }}</span>
-                        <div class="iconic-input">
-                            <input type="text" name="unit_id" value="{{ product.unit_id }}" hidden>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>产品单价</label>
-                        <input type="number" class="form-control" placeholder="产品单价" step="0.01" required
-                               name="price" value="{{ product.price }}">
-                    </div>
                     <button class=" btn btn-info product-new">保存</button>
                 </form>
 
+            </div>
+        </section>
+    </div>
+    <div class="col-lg-6">
+        <section class="panel">
+            <header class="panel-heading">
+                产品计量单位 <a class="btn btn-success product-new"
+                          href="{{ url_for('product.unit_new', product_id=product.id) }}">新增单位</a>
+            </header>
+            <div class="panel-body">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>单位名</th>
+                        <th>换算比例</th>
+                        <th>单价</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for unit in product.unit_all %}
+                        <tr>
+                            <td>{{ unit.name }}</td>
+                            <td>{{ unit.multiple }}</td>
+                            <td>{{ unit.price }}</td>
+                            <td><a href="{{ url_for('product.unit_edit', unit_id=unit.id) }}">编辑</a></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </section>
     </div>

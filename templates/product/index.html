@@ -12,8 +12,8 @@
                     <thead>
                     <tr>
                         <th><i class="fa fa-id-card-o"></i> 产品名</th>
-                        <th class="hidden-xs"><i class="fa fa-yen"></i> 单价</th>
-                        <th><i class="fa fa-balance-scale"></i> 基础计量单位</th>
+{#                        <th class="hidden-xs"><i class="fa fa-yen"></i> 单价</th>#}
+{#                        <th><i class="fa fa-balance-scale"></i> 基础计量单位</th>#}
                         <th><i class="fa fa-pencil"></i> 修改产品信息</th>
                     </tr>
                     </thead>
@@ -21,8 +21,8 @@
                     {% for product in products %}
                         <tr>
                             <td>{{ product.name }}</td>
-                            <td class="hidden-xs">{{ product.price }}</td>
-                            <td>{{ product.unit.name }}</td>
+{#                            <td class="hidden-xs">{{ product.price }}</td>#}
+{#                            <td>{{ product.unit.name }}</td>#}
                             <td class="hidden-xs">
                                 <a href="{{ url_for('product.edit', product_id=product.id) }}"
                                    class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i>编辑</a>

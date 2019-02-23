@@ -22,13 +22,13 @@ def login_post():
     remember = request.form.get('remember')
 
     check_result = Admin.login(account=account, password=password)
-    session['admin'] = check_result.to_dict_()
-    session['session_id'] = str(random.random())
 
     if not check_result:
         flash(message='账户或密码错误', category='error')
         return redirect(url_for('admin.login'))
 
+    session['admin'] = check_result.to_dict_()
+    session['session_id'] = str(random.random())
     if remember:
         Redis.set(f'admin_{check_result.id}', value=session['session_id'], ex=60 * 60 * 24 * 7)
     else:

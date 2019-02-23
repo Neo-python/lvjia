@@ -20,19 +20,17 @@
             <label for="product_id">产品:
                 <select name="product_id" id="product_id" class="product form-control input-sm" required>
                     <option value=""></option>
-                    {% for ep in order.firm.EP %}
-                        <option value="{{ ep.product_id }}" data-price="{{ ep.price }}"
-                                data-unit_name="{{ ep.unit.name }}"
-                                data-unit_id="{{ ep.unit_id }}">{{ ep.product.name }}
-                        </option>
+                    {% for id, items in order.firm.product_data.items() %}
+                        <option value="{{ id }}">{{ items.name }}</option>
                     {% endfor %}
+                </select>
+            </label>
+            <label for="unit_id">单位:
+                <select name="unit_id" id="unit_id" class="unit-select form-control input-sm" required>
                 </select>
             </label>
             <label for="price" class="small-label">单价:
                 <input type="number" name="price" id="price" step="0.01" class="price small-input" required>
-                <span>单位: <span class="unit_span"></span>
-                    <input type="text" readonly name="unit" class="unit" hidden>
-                </span>
             </label>
             <label for="quantity" class="small-label">数量:
                 <input type="number" name="quantity" id="quantity" step="0.01" required class="small-input">
@@ -68,22 +66,29 @@
                     <label for="product_id">产品:
                         <select name="product_id" id="product_id" class="product form-control input-sm" required>
                             <option value=""></option>
-                            {% for ep in order.firm.EP %}
-                                <option value="{{ ep.product_id }}" data-price="{{ ep.price }}"
-                                        data-unit_name="{{ ep.unit.name }}"
-                                        data-unit_id="{{ ep.unit_id }}"
-                                        {% if form.product_id == ep.product_id %}selected{% endif %}
-                                >{{ ep.product.name }}
-                                </option>
+                            {% for id, items in order.firm.product_data.items() %}
+                                <option value="{{ id }}" {% if form.product_id == id %}
+                                        selected
+                                {% endif %}>{{ items.name }}</option>
                             {% endfor %}
+
+                        </select>
+                    </label>
+                    <label for="unit_id">单位:
+                        <select name="unit_id" id="unit_id" class="unit-select form-control input-sm" required>
+                            {% for unit_id,unit_item in order.firm.product_data[form.product_id]['units'].items() %}
+                                <option value="{{ unit_id }}" data-price="{{ unit_item.price }}"
+                                        {% if unit_id==form.unit_id %}
+                                        selected
+                                        {% endif %}
+                                >{{ unit_item.name }}</option>
+                            {% endfor %}
+
                         </select>
                     </label>
                     <label for="price" class="small-label">单价:
                         <input type="number" name="price" id="price" step="0.01" class="price small-input" required
                                value="{{ form.price }}">
-                        <span>单位: <span class="unit_span">{{ form.unit.name }}</span>
-                    <input type="text" readonly name="unit" class="unit" hidden value="{{ form.unit_id }}">
-                </span>
                     </label>
                     <label for="quantity" class="small-label">数量:
                         <input type="number" name="quantity" id="quantity" step="0.01" required class="small-input"

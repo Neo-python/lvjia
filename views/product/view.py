@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, url_for
+from flask import render_template, request, redirect, url_for, flash
 from views.product import product
 from models.common import Product, Firm, ProductUnit
 from plugins.common import page_generator, Permission
@@ -21,40 +21,37 @@ def index():
 @Permission.need_login()
 def unit_index():
     """产品单位首页"""
-    return render_template('product/unit_index.html', unit_list=ProductUnit.basic_unit())
+    return render_template('product/unit_index.html')
 
 
-@product.route('/fixed_price/<int:company_id>/', methods=['GET'])
+@product.route('/fixed_price/<int:firm_id>/', methods=['GET'])
 @Permission.need_login()
-def fixed_price(company_id):
+def fixed_price(firm_id):
     """固定价格"""
-    company = Firm.query.get(company_id)
-    return render_template('product/fixed_price.html', company=company, unit_list=ProductUnit.basic_unit())
+    firm = Firm.query.get(firm_id)
+    return render_template('product/fixed_price.html', firm=firm)
 
 
-@product.route('/fixed_price/<int:company_id>/', methods=['POST'])
+@product.route('/fixed_price/<int:firm_id>/', methods=['POST'])
 @Permission.need_login()
-def fixed_price_post(company_id):
+def fixed_price_post(firm_id):
     """固定价格.表单提交
     """
     form = request.form.to_dict()
-    form.pop('unit')
-    unit_list = request.form.getlist('unit')
 
-    firm = Firm.query.get(company_id)
+    firm = Firm.query.get(firm_id)
     # 更新专价数据
     for i, ep in enumerate(firm.EP):
         ep.price = float(form[str(ep.id)])
-        ep.unit_id = int(unit_list[i])
     firm.direct_update_()  # 保存操作
-    return redirect(url_for('product.fixed_price', company_id=company_id))
+    return redirect(url_for('product.fixed_price', firm_id=firm_id))
 
 
 @product.route('/new/', methods=['GET'])
 @Permission.need_login()
 def new():
     """新增产品页"""
-    return render_template('product/new.html', unit_list=ProductUnit.basic_unit())
+    return render_template('product/new.html')
 
 
 @product.route('/new/', methods=['POST'])
@@ -64,20 +61,15 @@ def new_post():
     新增产品数据提交后,broadcast函数为每家公司设定专价.
     """
     name = request.form.get('name')
-    price = request.form.get('price')
-    unit_id = request.form.get('unit_id')
 
-    Product(name=name, price=price, unit_id=unit_id).direct_commit_().broadcast()
-
-    return redirect(url_for('product.index'))
+    return redirect(url_for('product.edit', product_id=Product(name=name).direct_commit_().id))
 
 
 @product.route('/<int:product_id>/edit/', methods=['GET'])
 @Permission.need_login()
 def edit(product_id):
     """编辑产品"""
-    return render_template('product/edit.html', product=Product.query.get(product_id),
-                           unit_list=ProductUnit.basic_unit())
+    return render_template('product/edit.html', product=Product.query.get(product_id))
 
 
 @product.route('/<int:product_id>/edit/', methods=['POST'])
@@ -86,8 +78,6 @@ def edit_post(product_id):
     """编辑产品.表单提交页"""
     product_ = Product.query.get(product_id)
     product_.name = request.form.get('name')
-    product_.unit_id = request.form.get('unit_id')
-    product_.price = request.form.get('price')
     product_.direct_update_()
     return redirect(url_for('product.index'))
 
@@ -100,43 +90,52 @@ def delete(product_id):
     return redirect(url_for('product.index'))
 
 
-@product.route('/unit/<int:unit_id>/', methods=['GET'])
-def unit_info(unit_id):
-    """计量单位主页"""
-    unit = ProductUnit.query.get(unit_id)
-    return render_template('product/unit_info.html', unit=unit)
-
-
-@product.route('/unit/new/', methods=['GET'])
+@product.route('/<int:product_id>/unit/new/', methods=['GET'])
 @Permission.need_login()
-def unit_new():
+def unit_new(product_id):
     """新建单位"""
-    return render_template('product/unit_new.html')
+    product_ = Product.query.get(product_id)
+    return render_template('product/unit_new.html', product=product_)
 
 
-@product.route('/unit/new/', methods=['POST'])
+@product.route('/<int:product_id>/unit/new/', methods=['POST'])
 @Permission.need_login()
-def unit_new_post():
+def unit_new_post(product_id):
     """新建单位.表单提交"""
-    name = request.form.get('name')
-    multiple = request.form.get('multiple')
-    ProductUnit(name=name, multiple=multiple, parent_id=0).direct_commit_()
-    return redirect(url_for('product.unit_index'))
+    try:
+        name = request.form.get('name')
+        price = request.form.get('price')
+        multiple = request.form.get('multiple', 1)
+        parent_id = request.form.get('parent_id', 0)
+        unit = ProductUnit(name=name, multiple=multiple, parent_id=parent_id, product_id=product_id, price=price)
+        unit.direct_commit_()
+    except BaseException as err:
+        flash(str(err), category='error')
+        flash('操作失败!请检查是否存在重复单位名', category='error')
+    else:
+        unit.broadcast()
+    return redirect(url_for('product.edit', product_id=product_id))
 
 
-@product.route('/unit/child/<int:unit_id>/', methods=['GET'])
-@Permission.need_login()
-def unit_child(unit_id):
-    """设定子单位"""
-    return render_template('product/unit_child.html', parent=ProductUnit.query.get(unit_id))
+@product.route('/unit/<int:unit_id>/edit/', methods=['GET'])
+def unit_edit(unit_id):
+    """编辑单位"""
+    unit = ProductUnit.query.get(unit_id)
+    return render_template('product/unit_edit.html', unit=unit)
 
 
-@product.route('/unit/child/<int:unit_id>/', methods=['POST'])
-@Permission.need_login()
-def unit_child_post(unit_id):
-    """设定子单位.表单提交"""
-    name = request.form.get('name')
-    multiple = float(request.form.get('multiple'))
+@product.route('/unit/<int:unit_id>/edit/', methods=['POST'])
+def unit_edit_post(unit_id):
+    """编辑单位 表单提交"""
+    # 表单获取
+    unit_name = request.form.get('name')
+    unit_multiple = request.form.get('multiple')
+    price = request.form.get('price')
+    # 更新数据
+    unit = ProductUnit.query.get(unit_id)
+    unit.name = unit_name
+    unit.multiple = unit_multiple
+    unit.price = price
+    unit.direct_update_()
 
-    ProductUnit(name=name, multiple=multiple, parent_id=unit_id).direct_commit_()
-    return redirect(url_for('product.unit_index'))
+    return redirect(url_for('product.edit', product_id=unit.product_id))

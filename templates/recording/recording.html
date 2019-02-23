@@ -7,10 +7,10 @@
         <div class="inputs col-lg-12 panel">
             <label for="personnel">联系人:
                 <select name="personnel" id="personnel" class="personnel form-control input-sm" required>
-                    {% if company.personnel|length != 1 %}
+                    {% if firm.personnel|length != 1 %}
                         <option value=""></option>
                     {% endif %}
-                    {% for person in company.personnel %}
+                    {% for person in firm.personnel %}
                         <option value="{{ person.id }}">{{ person.name }}
                         </option>
                     {% endfor %}
@@ -19,19 +19,17 @@
             <label for="product_id">产品:
                 <select name="product_id" id="product_id" class="product form-control input-sm" required>
                     <option value=""></option>
-                    {% for product in company.EP %}
-                        <option value="{{ product.product_id }}" data-price="{{ product.price }}"
-                                data-unit_name="{{ product.unit.name }}"
-                                data-unit_id="{{ product.unit_id }}">{{ product.product.name }}
-                        </option>
+                    {% for id,items in firm.product_data.items() %}
+                        <option value="{{ id }}">{{ items.name }}</option>
                     {% endfor %}
+                </select>
+            </label>
+            <label for="unit_id">单位:
+                <select name="unit_id" id="unit_id" class="unit-select form-control input-sm" required>
                 </select>
             </label>
             <label for="price" class="small-label">单价:
                 <input type="number" name="price" id="price" step="0.01" class="price small-input" required>
-                <span><span class="unit_span"></span>
-                    <input type="text" readonly name="unit" class="unit" hidden>
-                </span>
             </label>
             <label for="quantity" class="small-label">数量:
                 <input type="number" name="quantity" id="quantity" step="0.01" required class="small-input">
@@ -45,7 +43,7 @@
         </div>
     </div>
     <form action="" method="post">
-        <h1>{{ company.name }}订单数据录入</h1>
+        <h1>{{ firm.name }}订单数据录入</h1>
         <button type="button" id="add_input" class="btn btn-success">添加</button>
         <label for="deadline" class="datetime_width">
             完成时间<i class="fa fa-clock-o"></i>
@@ -58,7 +56,9 @@
 
     </form>
 {% endblock %}
+
 {% block script %}
+
     {% with add = 5 %}
         {% include 'recording/recording_script.html' %}
     {% endwith %}

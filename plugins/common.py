@@ -60,7 +60,9 @@ class OrmVerity:
 
 
 class OrdersInfo:
-    """订单信息集合"""
+    """订单信息集合
+    :param real: 订单信息汇总报表打印
+    """
 
     def __init__(self, orders: list, real: bool = False):
         self.orders = orders if isinstance(orders, Iterable) else [orders]
@@ -131,7 +133,7 @@ class Permission:
 
                 if not login:
                     return redirect(url_for('admin.login'))
-                elif not Permission.need_login(level=level):
+                elif not Permission.verify_level(level=level):
                     flash('权限不足,请切换到超级管理员账号!', category='error')
                     return redirect(request.headers.get('Referer'))
                 else:

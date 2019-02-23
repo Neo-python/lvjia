@@ -1,18 +1,18 @@
 {% extends 'base.html' %}
 {% block head %}
     <style>
-        body {
+        .orders {
             font-size: 18px;
         }
     </style>
 {% endblock %}
 {% block body %}
-    <div class="col-sm-12">
+    <div class="col-sm-12 orders">
         <section class="panel">
             <form action="{{ url_for('billing.orders_info') }}">
                 <header class="panel-heading head-border">
                     订单列表
-                    <button class="btn btn-info firm-new"><i class="fa fa-print"></i> 生产信息汇总</button>
+                    <button class="btn btn-info firm-new"><i class="fa fa-print"></i> 打印生产汇总信息</button>
                 </header>
                 <table class="table table-bordered">
                     <thead>
@@ -36,7 +36,7 @@
                             <td>
                                 <a class="btn btn-info"
                                    href="{{ url_for('billing.invoice_print', order_id=order.id) }}">
-                                    <i class="fa fa-print"></i>打印
+                                    <i class="fa fa-print"></i>打印发票单
                                 </a>
                                 <a class="btn btn-primary"
                                    href="{{ url_for('recording.order_edit', order_id=order.id) }}">

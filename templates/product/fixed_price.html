@@ -16,17 +16,18 @@
                     </thead>
                     <tbody>
 
-                    {% for ep in company.EP %}
+                    {% for ep in firm.EP.order_by('product_id') %}
                         <tr>
                             <td>{{ ep.product.name }}</td>
                             <td>
-                                <select name="unit" id="unit_id" required>
-                                    <option value=""></option>
-                                    {% for unit in ep.product.unit_all %}
-                                        <option value="{{ unit.id }}"
-                                                {% if ep.unit_id == unit.id %}selected{% endif %}>{{ unit.name }}</option>
-                                    {% endfor %}
-                                </select>
+                                {{ ep.unit.name }}
+{#                                <select name="unit" id="unit_id" required>#}
+{#                                    <option value=""></option>#}
+{#                                    {% for unit in ep.product.unit_all %}#}
+{#                                        <option value="{{ unit.id }}"#}
+{#                                                {% if ep.unit_id == unit.id %}selected{% endif %}>{{ unit.name }}</option>#}
+{#                                    {% endfor %}#}
+{#                                </select>#}
                             </td>
                             <td><input type="number" value="{{ ep.price }}" name="{{ ep.id }}" step="0.01"></td>
                         </tr>

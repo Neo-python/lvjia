@@ -1,17 +1,12 @@
 {% extends 'base.html' %}
 {% block head %}
-    <style>
-        .panel-heading span:first-child {
-            font-size: 18px;
-            font-weight: bolder;
-        }
-    </style>
+
 {% endblock %}
 {% block body %}
     <div class="col-lg-6">
         <section class="panel">
             <header class="panel-heading">
-                <span>{{ product.name }}</span><span>新增{% if not product.unit_all %}基础{% endif %}单位</span>
+                <span>{{ unit.name }}</span><span>编辑</span>
             </header>
             <div class="panel-body">
                 <form role="form" action="" method="post">
@@ -19,34 +14,34 @@
                         <label>单位名</label>
                         <div class="iconic-input">
                             <i class="fa fa-balance-scale"></i>
-                            <input type="text" class="form-control" placeholder="单位名" name="name" id="name" required>
+                            <input type="text" class="form-control" placeholder="单位名" name="name" id="name" required
+                                   value="{{ unit.name }}">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label>价格</label>
+                        <label>单价</label>
                         <div class="iconic-input">
                             <i class="fa fa-yen"></i>
-                            <input type="number" step="0.01" class="form-control" placeholder="价格" name="price"
-                                   id="price" required>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>对于基础单位倍率</label>
-                        <div class="iconic-input">
-                            <i class="fa fa-certificate"></i>
-                            <input type="number" class="form-control" placeholder="对于基础单位倍率" name="multiple"
-                                   id="multiple" value="1" step="0.01"
+                            <input type="number" class="form-control" placeholder="单价" name="price"
+                                   id="price" value="{{ unit.price }}" step="0.01"
                                    required>
                         </div>
                     </div>
-                    {% if  product.unit_all %}
-                        <input type="text" hidden name="parent_id" value="{{ product.unit_all[0].id }}">
-                    {% endif %}
+                    <div class="form-group">
+                        <label>基础倍率</label>
+                        <div class="iconic-input">
+                            <i class="fa fa-certificate"></i>
+                            <input type="number" class="form-control" placeholder="基础倍率" name="multiple"
+                                   id="multiple" value="{{ unit.multiple }}"
+                                   required>
+                        </div>
+                    </div>
                     <button class="btn btn-info product-new">提交</button>
                 </form>
             </div>
         </section>
     </div>
+
 {% endblock %}
 {% block script %}
 

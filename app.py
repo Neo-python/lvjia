@@ -1,4 +1,4 @@
-from flask import render_template
+from flask import render_template, flash, redirect, url_for
 from pymysql import install_as_MySQLdb
 from init import create_app, db
 
@@ -28,9 +28,21 @@ for filter_ in filter_funcs:
 
 @app.route('/', methods=['GET'])
 def index():
-    from flask import request
-    n = request.args.getlist('name')
     return render_template('base.html')
+
+
+@app.errorhandler(500)
+def error500(err):
+    """500错误"""
+    flash(str(err), category='error')
+    return redirect(url_for('index'))
+
+
+@app.errorhandler(400)
+def error400(err):
+    """400错误"""
+    flash(str(err), category='error')
+    return redirect(url_for('index'))
 
 
 if __name__ == '__main__':

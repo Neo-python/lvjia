@@ -27,61 +27,61 @@ def new_post():
     address = request.form.get('address')
 
     new_company = Firm(name=name, address=address).direct_commit_().init_external_price()
-    return redirect(url_for('firm.people_new', company_id=new_company.id))
+    return redirect(url_for('firm.people_new', firm_id=new_company.id))
 
 
-@firm.route('/<int:company_id>/index/', methods=['GET'])
+@firm.route('/<int:firm_id>/index/', methods=['GET'])
 @Permission.need_login()
-def company_index(company_id):
+def company_index(firm_id):
     """公司主页"""
-    company = Firm.query.get(company_id)
+    firm_ = Firm.query.get(firm_id)
     page = int(request.args.get('page', 1))
-    orders = Order.query.filter_by(company_id=company_id).order_by(Order.id).paginate(page=page, per_page=30)
+    orders = Order.query.filter_by(firm_id=firm_id).order_by(Order.id).paginate(page=page, per_page=30)
     data = {
         'orders': orders.items,
-        'page': page_generator(page, max_num=orders.pages, url=url_for('firm.company_index', company_id=company_id))
+        'page': page_generator(page, max_num=orders.pages, url=url_for('firm.company_index', firm_id=firm_id))
     }
-    return render_template('firm/firm_index.html', company=company, **data)
+    return render_template('firm/firm_index.html', firm=firm_, **data)
 
 
-@firm.route('/<int:company_id>/edit/', methods=['GET'])
+@firm.route('/<int:firm_id>/edit/', methods=['GET'])
 @Permission.need_login()
-def company_edit(company_id):
+def company_edit(firm_id):
     """公司信息编辑页"""
-    company = Firm.query.get(company_id)
-    return render_template('firm/edit.html', company=company)
+    firm_ = Firm.query.get(firm_id)
+    return render_template('firm/edit.html', firm=firm_)
 
 
-@firm.route('/<int:company_id>/edit/', methods=['POST'])
+@firm.route('/<int:firm_id>/edit/', methods=['POST'])
 @Permission.need_login()
-def company_edit_post(company_id):
+def company_edit_post(firm_id):
     """公司信息编辑表单提交"""
-    company = Firm.query.get(company_id)
+    company = Firm.query.get(firm_id)
     company.name = request.form.get('name')
     company.address = request.form.get('address')
 
     company.direct_update_()
-    return redirect(url_for('firm.company_index', company_id=company_id))
+    return redirect(url_for('firm.company_index', firm_id=firm_id))
 
 
-@firm.route('/people/new/<int:company_id>', methods=['GET'])
+@firm.route('/people/new/<int:firm_id>', methods=['GET'])
 @Permission.need_login()
-def people_new(company_id):
+def people_new(firm_id):
     """新建联系人"""
-    return render_template('firm/new_people.html', company_id=company_id)
+    return render_template('firm/new_people.html', firm_id=firm_id)
 
 
 @firm.route('/people/new/', methods=['POST'])
 @Permission.need_login()
 def people_new_post():
     """新建联系人表单提交"""
-    company_id = request.form.get('company_id')
+    firm_id = request.form.get('firm_id')
     name = request.form.get('name')
     telephone = request.form.get('telephone')
     remarks = request.form.get('remarks')
 
-    People(company_id=company_id, name=name, telephone=telephone, remarks=remarks).direct_commit_()
-    return redirect(url_for('firm.company_index', company_id=company_id))
+    People(firm_id=firm_id, name=name, telephone=telephone, remarks=remarks).direct_commit_()
+    return redirect(url_for('firm.company_index', firm_id=firm_id))
 
 
 @firm.route('/people/<int:people_id>/edit/', methods=['GET'])
@@ -104,7 +104,7 @@ def people_edit_post(people_id):
     people.telephone = telephone
     people.remarks = remarks
     people.direct_update_()
-    return redirect(url_for('firm.company_index', company_id=people.company_id))
+    return redirect(url_for('firm.company_index', firm_id=people.firm_id))
 
 
 @firm.route('/people/<int:people_id>/delete/', methods=['GET'])
@@ -112,17 +112,17 @@ def people_edit_post(people_id):
 def people_delete(people_id):
     """人员删除"""
     people = People.query.get(people_id).direct_delete_()
-    return redirect(url_for('firm.company_index', company_id=people.company_id))
+    return redirect(url_for('firm.company_index', firm_id=people.firm_id))
 
 
-@firm.route('/<int:company_id>/order_list/', methods=['GET'])
-def order_list(company_id):
+@firm.route('/<int:firm_id>/order_list/', methods=['GET'])
+def order_list(firm_id):
     """公司订单列表"""
     page = int(request.args.get('page', 1))
-    orders = Order.query.filter_by(company_id=company_id).order_by(Order.id).paginate(page=page, per_page=10)
+    orders = Order.query.filter_by(firm_id=firm_id).order_by(Order.id).paginate(page=page, per_page=10)
     data = {
-        'company_id': company_id,
+        'firm_id': firm_id,
         'orders': orders.items,
-        'page': page_generator(page, max_num=orders.pages, url=url_for('firm.order_list', company_id=company_id))
+        'page': page_generator(page, max_num=orders.pages, url=url_for('firm.order_list', firm_id=firm_id))
     }
     return render_template('firm/order_list.html', **data)
