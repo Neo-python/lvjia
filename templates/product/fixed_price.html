@@ -3,7 +3,7 @@
     <div class="col-sm-6">
         <section class="panel">
             <header class="panel-heading head-border">
-                <h3>价格设定</h3>
+                <h3>{{ firm.name }} 价格设定</h3>
             </header>
             <form action="" method="post">
                 <table class="table table-hover">
@@ -21,13 +21,6 @@
                             <td>{{ ep.product.name }}</td>
                             <td>
                                 {{ ep.unit.name }}
-{#                                <select name="unit" id="unit_id" required>#}
-{#                                    <option value=""></option>#}
-{#                                    {% for unit in ep.product.unit_all %}#}
-{#                                        <option value="{{ unit.id }}"#}
-{#                                                {% if ep.unit_id == unit.id %}selected{% endif %}>{{ unit.name }}</option>#}
-{#                                    {% endfor %}#}
-{#                                </select>#}
                             </td>
                             <td><input type="number" value="{{ ep.price }}" name="{{ ep.id }}" step="0.01"></td>
                         </tr>

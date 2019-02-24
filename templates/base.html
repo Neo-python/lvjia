@@ -232,9 +232,14 @@
         $('.message-box-confirm').click(function () {
             $('.message-box-wrapper').remove();
         });
-        {% if get_flashed_messages(['error']) %}
-            {% for message in get_flashed_messages(['error']) %}
-                toastr.warning('{{ message[1] }}');
+        {% if get_flashed_messages(category_filter=['error']) %}
+            {% for message in get_flashed_messages(category_filter=['error']) %}
+                toastr.warning('{{ message }}');
+            {% endfor %}
+        {% endif %}
+        {% if get_flashed_messages(category_filter=['message']) %}
+            {% for message in get_flashed_messages(category_filter=['message']) %}
+                toastr.success('{{ message }}');
             {% endfor %}
         {% endif %}
 

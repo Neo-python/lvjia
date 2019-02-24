@@ -121,13 +121,18 @@ class People(Common, db.Model):
     firm_id = db.Column(db.Integer, db.ForeignKey('firm.id'), nullable=False)
     remarks = db.Column(db.String(length=255), default='', comment='人员备注')
 
-    order_form_all = db.relationship('OrderForm', lazy='select', backref='person')
+    forms = db.relationship('OrderForm', lazy='dynamic', backref='person')
 
     def __init__(self, name: str, telephone: str, firm_id: int, remarks: str = None):
         self.name = name
         self.telephone = telephone
         self.firm_id = firm_id
         self.remarks = remarks
+
+    @property
+    def form_all(self):
+        """全部订单"""
+        return self.forms.all()
 
 
 class ExternalPrice(Common, db.Model):

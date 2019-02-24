@@ -65,18 +65,29 @@ class OrdersInfo:
     :param real: 订单信息汇总报表打印
     """
 
-    def __init__(self, orders: list, real: bool = False):
+    def __init__(self, orders: list = None, forms: list = None, real: bool = False):
         self.orders = orders if isinstance(orders, Iterable) else [orders]
         self.form_info = dict()
         self.real = real
+        self.forms = forms
+
+    def collect_forms(self):
+        """计算多个表单"""
+        if not self.real:
+            for form in self.forms:
+                self.update(form=form)
+        else:
+            for form in self.forms:
+                self.real_update(form=form)
+        return self.form_info
 
     def collect_quantity(self) -> dict:
         """计算多个订单产品数量"""
         for order in self.orders:
-            self.forms(order=order)
+            self._forms(order=order)
         return self.form_info
 
-    def forms(self, order):
+    def _forms(self, order):
         """订单抽取单条表单"""
         if not self.real:
             for form in order.forms:
@@ -162,10 +173,11 @@ class Permission:
             if redis_token == session_id:
                 return True
             else:
+                session.clear()  # 清除session状态
                 flash('您的账户已在异地登录,如果不是您本人操作,请联系管理员及时修改登录密码!', category='error')
         else:
+            session.clear()  # 清除session状态
             flash('登录状态已经过期,请重新登录', category='error')
-        session.clear()  # 清除session状态
         return False
 
     @staticmethod

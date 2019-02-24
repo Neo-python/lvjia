@@ -1,5 +1,15 @@
-.day.active{
-    background-image: -webkit-linear-gradient(top, #b01400, #b01300)!important;
+@media print {
+    .print-btn {
+        display: none;
+    }
+
+    .cancel-btn {
+        display: none;
+    }
+}
+
+.day.active {
+    background-image: -webkit-linear-gradient(top, #b01400, #b01300) !important;
 }
 
 .small-input {
@@ -54,6 +64,7 @@ input.check-gif {
 .btn.firm-new {
     float: right;
 }
+
 .float-right {
     float: right;
 }

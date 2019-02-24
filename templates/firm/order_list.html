@@ -47,17 +47,20 @@
                         <thead>
                         <tr>
                             <th><input type="checkbox" id="all_select"> <label for="all_select">全选</label></th>
-                            <th><i class="fa fa-bookmark-o"></i> 时间</th>
+                            <th><i class="fa fa-bookmark-o"></i> 录单时间</th>
+                            <th><i class="fa fa-bookmark-o"></i> 录单时间</th>
                             <th class="hidden-xs"><i class="fa fa-building-o"></i> 订单内容</th>
                             <th><i class="fa fa-bar-chart-o"></i> 备注信息</th>
                             <th class="hidden-xs"><i class="fa fa-cogs"></i> 操作</th>
                         </tr>
                         </thead>
                         <tbody id="tbody">
-                        <form action="{{ url_for('clear.orders_info') }}" id="orders-form" method="post">
+                        <form action="" id="orders-form" method="post">
+                            <input type="text" name="firm_id" value="{{ firm_id }}" hidden>
                             {% for order in orders %}
                                 <tr>
                                     <td><input type="checkbox" value="{{ order.id }}" name="order_ids"></td>
+                                    <td>{{ order.datetime|datetime_string('%m-%d') }}</td>
                                     <td>{{ order.deadline_format('%m-%d', False) }}</td>
                                     <td>{{ orders_info(order)|join(' | ') }}
                                         <br>{{ order.peoples_info().keys()|join(' | ') }}</td>
@@ -97,6 +100,7 @@
                 }
             });
             $('#generate').click(function () {
+                $('#orders-form').attr('action', "{{ url_for('clear.orders_info') }}");
                 $('#orders-form').submit()
             });
             $("#generate-real").click(function () {

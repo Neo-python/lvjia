@@ -1,16 +1,6 @@
 <style>
-    @media print {
-        .print-btn {
-            display: none;
-        }
-
-        .cancel-btn {
-            display: none;
-        }
-    }
-
-    body {
-        padding: 25px;
+    .print-btn {
+        float: right;
     }
 
     .order-info {
@@ -20,6 +10,10 @@
         min-width: 250px;
         margin-right: 1%;
         margin-bottom: 1%;
+    }
+
+    .wrapper {
+        padding: 25px;
     }
 
     .wrapper-order-info {
@@ -50,37 +44,41 @@
         margin-right: 20px;
     }
 </style>
+<link rel="stylesheet" href="/static/css/neo.css">
 <div>
     <button onclick="history.back(-1)" class="cancel-btn">取消/返回</button>
     <button onclick="window.print()" class="print-btn">打印</button>
 </div>
-<div class="wrapper-order-info">
-    {% for order in orders %}
-        <div class="order-info">
-            <span class="firm-name">{{ order.firm.name }}</span>
-            <span>{{ order.deadline_format('%Y-%m-%d %H:%M', True) }}</span><br>
-            {% if order.remarks %}
-                <span>{{ order.remarks }}</span><br>
-            {% endif %}
-            {% for form in order.forms %}
-                <span>{{ form.person.name }}</span>
-                <span>{{ form.product.name }}</span>
-                <span>{{ form.quantity }}</span>
-                <span>{{ form.unit.name }}</span> <br>
-            {% endfor %}
-        </div>
-    {% endfor %}
+<div class="wrapper">
+    <div class="wrapper-order-info">
+        {% for order in orders %}
+            <div class="order-info">
+                <span class="firm-name">{{ order.firm.name }}</span>
+                <span>{{ order.deadline_format('%Y-%m-%d %H:%M', True) }}</span><br>
+                {% if order.remarks %}
+                    <span>{{ order.remarks }}</span><br>
+                {% endif %}
+                {% for form in order.forms %}
+                    <span>{{ form.person.name }}</span>
+                    <span>{{ form.product.name }}</span>
+                    <span>{{ form.quantity }}</span>
+                    <span>{{ form.unit.name }}</span> <br>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="summary-wrapper">
+        {% for key, values in form_info.items() %}
+            <div class="summary-info">
+                <span class="summary-name">{{ key }}</span>
+                <span class="summary-quantity">{{ values.quantity|round(2) }}</span>
+                <span class="summary-unit">{{ values.unit }}</span>
+            </div>
+        {% endfor %}
+    </div>
 </div>
 
-<div class="summary-wrapper">
-    {% for key, values in form_info.items() %}
-        <div class="summary-info">
-            <span class="summary-name">{{ key }}</span>
-            <span class="summary-quantity">{{ values.quantity|round(2) }}</span>
-            <span class="summary-unit">{{ values.unit }}</span>
-        </div>
-    {% endfor %}
-</div>
 <script>
     window.onload = function () {
         window.print();

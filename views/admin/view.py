@@ -10,6 +10,7 @@ from init import Redis
 def login():
     """登录页面"""
     if Permission.verify_login():
+        flash('已处于登录状态', category='message')
         return redirect(url_for('index'))
     return render_template('admin/login.html')
 
@@ -52,7 +53,7 @@ def real_status():
         Redis.set(name=f'real_admin_{session_admin.get("id")}', value=session_id, ex=60 * 10)
     else:
         flash(message='Bad request', category='error')
-    return redirect(url_for('index'))
+    return redirect(request.headers.get('Referer', '/'))
 
 
 @admin.route('/logout/', methods=['GET'])

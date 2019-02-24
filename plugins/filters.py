@@ -1,4 +1,5 @@
 """模板过滤器层"""
+import datetime
 from init import Redis
 from flask import session, request
 from plugins.common import OrdersInfo
@@ -20,10 +21,10 @@ def real_status():
     return False
 
 
-def form_total_price(order, real: bool = False):
+def form_total_price(forms, real: bool = False):
     """单项表单总价计算"""
     price = 0.0
-    for form in order.forms:
+    for form in forms:
         if real:
             price += float(form.real_quantity * form.price)
         else:
@@ -35,7 +36,7 @@ def orders_total_price(orders, real: bool = False):
     """订单集合总价"""
     price = 0.0
     for order in orders:
-        price += form_total_price(order=order, real=real)
+        price += form_total_price(forms=order.forms, real=real)
     return price
 
 
@@ -55,4 +56,16 @@ funcs = (
     blueprint,
     form_total_price,
     orders_total_price
+)
+
+
+#  过滤器
+
+def datetime_string(aims: datetime.datetime, fmt: str = '%Y-%m-%d %H:%M') -> str:
+    """时间类型数据类型转换"""
+    return aims.strftime(fmt)
+
+
+filters = (
+    datetime_string,
 )

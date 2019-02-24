@@ -1,0 +1,182 @@
+<link rel="stylesheet" href="/static/css/bootstrap-theme.min.css">
+<link rel="stylesheet" href="/static/css/bootstrap.css">
+<style>
+    @media print {
+        .print-btn {
+            display: none;
+        }
+
+        .cancel-btn {
+            display: none;
+        }
+
+
+        .info-title {
+            display: none !important;
+        }
+
+
+        .info-title.active {
+            display: table-cell !important;
+        }
+    }
+
+    .order_total_price {
+        font-weight: bolder;
+    }
+
+    .orders_total_price {
+        font-weight: bolder;
+        font-size: 20px;
+    }
+
+    .panel {
+        padding: 20px;
+    }
+
+    .print-btn {
+        float: right;
+    }
+
+    h2 {
+        text-align: center;
+    }
+</style>
+<div>
+    <button onclick="history.back(-1)" class="cancel-btn">取消/返回</button>
+    <button onclick="window.print()" class="print-btn">打印</button>
+</div>
+<section class="panel">
+    <header class="panel-heading head-border">
+
+    </header>
+    <section class="isolate-tabs">
+        <ul class="nav nav-tabs nav-justified">
+            <li class="active info-title">
+                <a data-toggle="tab" href="#jus" aria-expanded="true">
+                    {% if not real %}
+                        {{ firm.name }} 订单数据汇总
+                    {% endif %}
+                </a>
+            </li>
+            {% for person_name in person_forms %}
+                <li class="info-title">
+                    <a data-toggle="tab" href="#{{ person_name }}" aria-expanded="false">{{ person_name }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+        <div class="panel-body">
+            <div class="tab-content">
+                <div id="jus" class="tab-pane active">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>单位</th>
+                            <th>产品</th>
+                            <th>数量</th>
+                            <th>单价/单位</th>
+                            <th>总价</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for order in orders %}
+                            {% for form in order.forms %}
+                                <tr>
+                                    <td>{{ form.person.name }}</td>
+                                    <td>{{ form.product.name }}</td>
+                                    <td>
+                                        {% if real %}
+                                            {{ form.real_quantity }}
+                                        {% else %}
+                                            {{ form.quantity }}
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ form.price }}/{{ form.unit.name }}</td>
+                                    {% if real %}
+                                        <td>{{ (form.price * form.real_quantity)|round(2) }}</td>
+                                    {% else %}
+                                        <td>{{ (form.price * form.quantity)|round(2) }}</td>
+                                    {% endif %}
+
+                                </tr>
+                            {% endfor %}
+                            <tr class="active">
+                                <td colspan="4">{{ order.deadline_format('%Y-%m-%d', False) }}</td>
+                                <td class="order_total_price">{{ form_total_price(order.forms, real)|round(2) }}</td>
+                            </tr>
+                        {% endfor %}
+                        <tr class="info">
+                            <td colspan="4"></td>
+                            <td class="orders_total_price">{{ orders_total_price(orders, real)|round(2) }}</td>
+                        </tr>
+                        <tr class="warning">
+                            <td colspan="5">
+                                {% for product, items in orders_info.items() %}
+                                    <span><span style="font-weight: bolder">{{ product }}</span> :
+                                <span style="font-size: 20px;font-weight: bolder">{{ items.quantity }}</span>/<span>{{ items.unit }}&nbsp;</span></span>
+                                {% endfor %}
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                {% for person_name, items in person_forms.items() %}
+                    <div id="{{ person_name }}" class="tab-pane">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>单位</th>
+                                <th>产品</th>
+                                <th>数量</th>
+                                <th>单价/单位</th>
+                                <th>总价</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for form in items.forms %}
+                                <tr>
+                                    <td>{{ form.person.name }}</td>
+                                    <td>{{ form.product.name }}</td>
+                                    <td>
+                                        {% if real %}
+                                            {{ form.real_quantity }}
+                                        {% else %}
+                                            {{ form.quantity }}
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ form.price }}/{{ form.unit.name }}</td>
+                                    {% if real %}
+                                        <td>{{ (form.price * form.real_quantity)|round(2) }}</td>
+                                    {% else %}
+                                        <td>{{ (form.price * form.quantity)|round(2) }}</td>
+                                    {% endif %}
+
+                                </tr>
+                            {% endfor %}
+                            <tr class="info">
+                                <td colspan="4"></td>
+                                <td class="orders_total_price">{{ form_total_price(items.forms, real)|round(2) }}</td>
+                            </tr>
+                            <tr class="warning">
+                                <td colspan="5">
+                                    {% for product, items in items.summary.items() %}
+                                        <span><span style="font-weight: bolder">{{ product }}</span> :
+                                <span style="font-size: 20px;font-weight: bolder">{{ items.quantity }}</span>/<span>{{ items.unit }}&nbsp;</span></span>
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                {% endfor %}
+
+            </div>
+        </div>
+    </section>
+
+
+</section>
+
+
+<script src="/static/js/jquery-1.10.2.min.js"></script>
+<script src="/static/js/bootstrap.min.js"></script>
