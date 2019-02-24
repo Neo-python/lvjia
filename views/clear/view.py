@@ -7,7 +7,12 @@ from plugins.common import OrdersInfo
 
 @clear.route('/orders_info/', methods=['POST'])
 def orders_info():
-    """订单详情"""
+    """对账数据详情
+    real -> Ture:使用real_quantity计算数据 False:使用order_form.quantity计算
+    personnel -> 同一公司,不同联系人的数据统计计算 {联系人姓名:{'summary': 订单数汇总, forms: 归属于此联系人的订单详情[form1,form2]}}
+    orders_info -> 公司数据汇总
+    :return:
+    """
     firm = Firm.query.get(request.form.get('firm_id'))
     order_ids = request.form.getlist('order_ids')
     if request.args.get('model', None) == 'real':

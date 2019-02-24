@@ -34,7 +34,12 @@ class Firm(Common, db.Model):
 
     @property
     def product_data(self):
-        """得到所有产品数据"""
+        """得到所有产品数据
+        result = {
+            product.id:{unit.id:{name: unit.name}}
+        }
+        :return:
+        """
         result = dict()
         for i in self.EP:
             if result.get(i.product_id):
