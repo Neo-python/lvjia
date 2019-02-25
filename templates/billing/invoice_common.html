@@ -56,15 +56,6 @@
         {{ order.deadline_format('%Y年 %m月 %d日',True) }}
     </div>
     <div class="table-div">
-        {% for form in order.forms %}
-            <div class="billing-row">
-                <div>{{ form.person.name }}</div>
-                <div>{{ form.product.name }}</div>
-                <div>{{ form.quantity }} {{ form.unit.name }}</div>
-                <div>{{ form.price }}</div>
-                <div>{{ (form.price* form.quantity)|round(2) }}</div>
-            </div>
-        {% endfor %}
         <table>
             <tbody>
             {% for form in order.forms %}
