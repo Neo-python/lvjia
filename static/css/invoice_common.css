@@ -19,7 +19,7 @@
 }
 
 .selfInfo-div {
-    padding: 15% 0 1% 55%;
+    padding: 0.5% 0 1% 55%;
     margin: 0;
 }
 
@@ -41,7 +41,7 @@ span {
 }
 
 .billing-row div:first-child {
-    width: 30%;
+    width: 25%;
 }
 
 .billing-row div:nth-child(2) {
@@ -49,15 +49,16 @@ span {
 }
 
 .billing-row div:nth-child(3) {
-    width: 15%;
+    width: 23%;
+    text-align: inherit;
 }
 
 .billing-row div:nth-child(4) {
-    width: 10%;
+    width: 7%;
 }
 
 .billing-row div:nth-child(5) {
-    width: 15%;
+    width: 5%;
 }
 
 input {
