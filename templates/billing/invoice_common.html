@@ -52,6 +52,7 @@
 <button onclick="window.print()" class="print-btn">打印</button>
 <div>
     <div class="selfInfo-div">
+        {{ order.firm.name }}
         {{ order.deadline_format('%Y年 %m月 %d日',True) }}
     </div>
     <div class="table-div">
