@@ -21,12 +21,13 @@
         width: 20%;
     }
 
-    table tbody tr td:nth-child(2){
-        width: 25%;
+    table tbody tr td:nth-child(2) {
+        width: 24%;
     }
 
     table tbody tr td:nth-child(3) {
         width: 25%;
+        text-align: inherit;
     }
 
     table tbody tr td:nth-child(4) {
@@ -51,8 +52,9 @@
 <button onclick="history.back(-1)" class="cancel-btn">取消/返回</button>
 <button onclick="window.print()" class="print-btn">打印</button>
 <div>
+    <div style="float: left;margin-left: 5%">{{ order.firm.name }}</div>
     <div class="selfInfo-div">
-        {{ order.firm.name }}
+
         {{ order.deadline_format('%Y年 %m月 %d日',True) }}
     </div>
     <div class="table-div">
@@ -74,7 +76,7 @@
             <div></div>
             <div></div>
             <div></div>
-            <div>{{ price_sum }}</div>
+            <div style="font-size: 20px;font-weight: bolder">{{ price_sum }}</div>
         </div>
     </div>
 </div>

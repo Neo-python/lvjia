@@ -41,7 +41,7 @@ span {
 }
 
 .billing-row div:first-child {
-    width: 25%;
+    width: 30%;
 }
 
 .billing-row div:nth-child(2) {
@@ -49,16 +49,15 @@ span {
 }
 
 .billing-row div:nth-child(3) {
-    width: 23%;
-    text-align: inherit;
+    width: 15%;
 }
 
 .billing-row div:nth-child(4) {
-    width: 7%;
+    width: 10%;
 }
 
 .billing-row div:nth-child(5) {
-    width: 5%;
+    width: 15%;
 }
 
 input {
