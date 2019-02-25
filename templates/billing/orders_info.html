@@ -4,25 +4,22 @@
     }
 
     .order-info {
-        float: left;
         display: inline-block;
-        max-width: 300px;
-        min-width: 250px;
-        margin-right: 1%;
-        margin-bottom: 1%;
+        padding: 0 0 5% 0;
+        font-size: 30px;
+        font-weight: 100;
+        width: 33%;
     }
 
     .wrapper {
-        padding: 25px;
+        {#padding: 25px;#}
     }
 
     .wrapper-order-info {
         display: inline-block;
     }
 
-    .firm-name {
-        font-size: larger;
-    }
+
 
     .summary-name {
         font-size: x-large;
@@ -38,23 +35,35 @@
 
     .summary-wrapper {
         display: flex;
+        position: relative;
+        bottom: 0;
     }
 
     .summary-info {
         margin-right: 20px;
+    }
+
+    h1 {
+        display: contents;
+        text-align: center;
+    }
+    p{
+        margin: 0;
     }
 </style>
 <link rel="stylesheet" href="/static/css/neo.css">
 <div>
     <button onclick="history.back(-1)" class="cancel-btn">取消/返回</button>
     <button onclick="window.print()" class="print-btn">打印</button>
+    <h1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;生产信息汇总
+        &nbsp;{{ now.strftime('%m月%d日') }}</h1>
 </div>
 <div class="wrapper">
     <div class="wrapper-order-info">
         {% for order in orders %}
             <div class="order-info">
-                <span class="firm-name">{{ order.firm.name }}</span>
-                <span>{{ order.deadline_format('%Y-%m-%d %H:%M', True) }}</span><br>
+                <p class="firm-name">{{ order.firm.name }}</p>
+                {#                <span>{{ order.deadline_format('%Y-%m-%d %H:%M', True) }}</span><br>#}
                 {% if order.remarks %}
                     <span>{{ order.remarks }}</span><br>
                 {% endif %}
@@ -71,9 +80,7 @@
     <div class="summary-wrapper">
         {% for key, values in form_info.items() %}
             <div class="summary-info">
-                <span class="summary-name">{{ key }}</span>
-                <span class="summary-quantity">{{ values.quantity|round(2) }}</span>
-                <span class="summary-unit">{{ values.unit }}</span>
+                <span class="summary-name">{{ key }}{{ values.quantity|round(2) }}{{ values.unit }}</span>
             </div>
         {% endfor %}
     </div>

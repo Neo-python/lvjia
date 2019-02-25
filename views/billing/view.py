@@ -1,3 +1,4 @@
+import datetime
 from flask import render_template, request, url_for
 from views.billing import billing
 from models.common import Order
@@ -43,4 +44,4 @@ def orders_info():
     orders = [item[1] for item in sort]
 
     form_info = OrdersInfo(orders=orders, real=True).collect_quantity()
-    return render_template('billing/orders_info.html', orders=orders, form_info=form_info)
+    return render_template('billing/orders_info.html', orders=orders, form_info=form_info, now=datetime.datetime.now())

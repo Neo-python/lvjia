@@ -5,6 +5,7 @@
         border: none !important;
         border-collapse: separate;
         border-spacing: 10px;
+        width: 90%;
     }
 
     table tbody {
@@ -16,16 +17,35 @@
 
     }
 
-    table tbody tr td {
-        border: none !important;
-        padding: 0 !important;
-        margin: 0 !important;
+    table tbody tr td:nth-child(1) {
+        width: 20%;
+    }
+
+    table tbody tr td:nth-child(2){
+        width: 25%;
+    }
+
+    table tbody tr td:nth-child(3) {
+        width: 25%;
+    }
+
+    table tbody tr td:nth-child(4) {
+        width: 5%;
+
+    }
+
+    table tbody tr td:nth-child(5) {
+        width: 5%;
     }
 
     .table-div {
         padding-top: 14%;
         padding-left: 14%;
         padding-right: 10%;
+    }
+
+    table tbody tr td {
+        text-align: center;
     }
 </style>
 <button onclick="history.back(-1)" class="cancel-btn">取消/返回</button>
@@ -44,6 +64,19 @@
                 <div>{{ (form.price* form.quantity)|round(2) }}</div>
             </div>
         {% endfor %}
+        <table>
+            <tbody>
+            {% for form in order.forms %}
+                <tr>
+                    <td>{{ form.person.name }}</td>
+                    <td>{{ form.product.name }}</td>
+                    <td>{{ form.quantity }} {{ form.unit.name }}</td>
+                    <td>{{ form.price }}</td>
+                    <td>{{ (form.price* form.quantity)|round(2) }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
         <div class="billing-row">
             <div></div>
             <div></div>
@@ -51,8 +84,6 @@
             <div></div>
             <div>{{ price_sum }}</div>
         </div>
-
-
     </div>
 </div>
 <script>
