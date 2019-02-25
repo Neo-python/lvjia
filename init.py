@@ -25,6 +25,6 @@ def create_app():
         'SQLALCHEMY_DATABASE_URI'] = f'mysql://{config.MYSQL_USER}:{config.MYSQL_PASSWORD}@{config.MYSQL_HOST}/' \
         f'{config.MYSQL_NAME}'  # 链接app,db导入app时获取连接信息
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # 如果设置成True(默认情况)，Flask-SQLAlchemy 将会追踪对象的修改并且发送信号。
-    app.config['SQLALCHEMY_POOL_SIZE'] = 120
+    app.config['SQLALCHEMY_POOL_SIZE'] = 20
     app.config['SQLALCHEMY_ECHO'] = False  # 查看orm生成的语句
     return app
