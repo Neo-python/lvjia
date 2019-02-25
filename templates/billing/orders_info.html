@@ -12,15 +12,14 @@
         font-family: 方正兰亭超细黑简体;
     }
 
-    .wrapper {
-        {#padding: 25px;#}
-    }
-
     .wrapper-order-info {
-        display: inline-block;
+        width: 100%;
+        display: -webkit-box;
     }
 
-
+    .wrapper-order-info div {
+        width: 51%;
+    }
 
     .summary-name {
         font-size: x-large;
@@ -36,11 +35,18 @@
         margin-right: 20px;
     }
 
+    ul li {
+        font-size: 40px;
+        font-family: 方正兰亭超细黑简体;
+        font-weight: 100;
+    }
+
     h1 {
         display: contents;
         text-align: center;
     }
-    p{
+
+    p {
         margin: 0;
     }
 </style>
@@ -54,33 +60,52 @@
 <div class="wrapper">
     <div class="wrapper-order-info">
         {% for order in orders %}
-            <div class="order-info">
-                <p class="firm-name">{{ order.firm.name }}</p>
-                {#                <span>{{ order.deadline_format('%Y-%m-%d %H:%M', True) }}</span><br>#}
-                {% if order.remarks %}
-                    <span>{{ order.remarks }}</span><br>
-                {% endif %}
-                {% for form in order.forms %}
-                    <span>{{ form.person.name }}</span>
-                    <span>{{ form.product.name }}</span>
-                    <span>{{ form.quantity }}</span>
-                    <span>{{ form.unit.name }}</span> <br>
-                {% endfor %}
+            <div>
+                <ul>
+                    <li>{{ order.firm.name }}</li>
+                    <li>{{ order.remarks }}</li>
+                    {% with name = Name() %}
+                        {% for form in order.forms %}
+                            {% if name.check(form.person.name) %}
+                                <li>
+                                    {{ form.product.name }}{{ form.real_quantity }}{{ form.unit.name }}</li>
+                            {% else %}
+                                <li>
+                                    {{ form.person.name }}{{ form.product.name }}{{ form.real_quantity }}{{ form.unit.name }}</li>
+                            {% endif %}
+                        {% endfor %}
+                    {% endwith %}
+                </ul>
             </div>
         {% endfor %}
+
     </div>
 
-    <div class="summary-wrapper">
-        {% for key, values in form_info.items() %}
-            <div class="summary-info">
-                <span class="summary-name">{{ key }}{{ values.quantity|round(2) }}{{ values.unit }}</span>
-            </div>
-        {% endfor %}
-    </div>
+
 </div>
-
-<script>
-    window.onload = function () {
-        window.print();
-    }
-</script>
+{% for order in orders %}
+    <div class="order-info">
+        <p class="firm-name">{{ order.firm.name }}</p>
+        {% if order.remarks %}
+            <span>{{ order.remarks }}</span><br>
+        {% endif %}
+        {% for form in order.forms %}
+            <span>{{ form.person.name }}</span>
+            <span>{{ form.product.name }}</span>
+            <span>{{ form.quantity }}</span>
+            <span>{{ form.unit.name }}</span> <br>
+        {% endfor %}
+    </div>
+{% endfor %}
+<div class="summary-wrapper">
+    {% for key, values in form_info.items() %}
+        <div class="summary-info">
+            <span class="summary-name">{{ key }}{{ values.quantity|round(2) }}{{ values.unit }}</span>
+        </div>
+    {% endfor %}
+</div>
+{#<script>#}
+{#    window.onload = function () {#}
+{#        window.print();#}
+{#    }#}
+{#</script>#}

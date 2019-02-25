@@ -5,6 +5,18 @@ from flask import session, request
 from plugins.common import OrdersInfo
 
 
+class Name:
+    def __init__(self):
+        self.name = ''
+
+    def check(self, name):
+        if self.name == name:
+            return True
+        else:
+            self.name = name
+            return False
+
+
 def orders_info(orders: list) -> dict:
     """jinja模板函数"""
     return OrdersInfo(orders=orders).collect_quantity()
@@ -55,7 +67,8 @@ funcs = (
     real_status,
     blueprint,
     form_total_price,
-    orders_total_price
+    orders_total_price,
+    Name
 )
 
 
