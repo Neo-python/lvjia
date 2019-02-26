@@ -13,9 +13,11 @@
     整体架构
         nginx + uwsgi 部署服务
         python相关依赖库通过 pip install -r requirements.txt 安装
-        静态文件链接:https://share.weiyun.com/5SVx4yF
+        静态文件下载链接:https://share.weiyun.com/5SVx4yF
         数据库结构文件:lvjia_database.sql.快速建立数据库结构 --> 进入mysql后 执行 source /this_sqlFile_path/lvjia_database.sql;
         config.py中的配置信息,需要根据自己的情况设定
+    其他:
+        因为是定制系统,出货与生产的报表模板需要使用此项目的小伙伴自行设计咯.
 ### 其他
 ##### 对python开发感兴趣的,打算学习python开发的可以了解一下
         https://ke.qq.com/teacher/526599801
