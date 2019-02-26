@@ -22,8 +22,7 @@
             {% for form in order.forms %}
                 <tr>
                     <td>{{ form.person.name }}</td>
-                    <td>{{ form.product.name }}</td>
-                    <td>{{ form.quantity }} {{ form.unit.name }}</td>
+                    <td colspan="2">{{ form.product.name }} {{ form.quantity }} {{ form.unit.name }}</td>
                     <td>{{ form.price }}</td>
                     <td>{{ (form.price* form.quantity)|round(2) }}</td>
                 </tr>

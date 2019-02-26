@@ -17,11 +17,13 @@ body {
     float: right;
 }
 .table-div{
-    margin-left: 25mm;
+    margin-left: 15mm;
 }
 .selfInfo{
-    padding-top: 20mm;
-    margin-bottom: 20mm;
+    padding-top: 15mm;
+    padding-left: 8mm;
+    margin-bottom: 8mm;
+    padding-right: 35mm;
 }
 .selfInfo div:nth-child(2) span{
     float: right;
@@ -30,13 +32,10 @@ table tbody tr td:nth-child(1){
     width: 23mm;
 }
 table tbody tr td:nth-child(2){
-    width: 23mm;
+    width: 37mm;
 }
 table tbody tr td:nth-child(3){
-    width: 13mm;
-}
-table tbody tr td:nth-child(4){
-    width: 26mm;
+    width: 75mm;
 }
 .billing-row{
     text-align: center;
