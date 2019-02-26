@@ -22,7 +22,7 @@ body {
 .selfInfo{
     padding-top: 15mm;
     padding-left: 8mm;
-    margin-bottom: 8mm;
+    margin-bottom: 10mm;
     padding-right: 35mm;
 }
 .selfInfo div:nth-child(2) span{
@@ -35,9 +35,9 @@ table tbody tr td:nth-child(2){
     width: 37mm;
 }
 table tbody tr td:nth-child(3){
-    width: 75mm;
+    width: 70mm;
 }
 .billing-row{
     text-align: center;
-    margin-left: 15mm;
+    margin-left: 91mm;
 }
