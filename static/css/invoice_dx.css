@@ -37,6 +37,9 @@ table tbody tr td:nth-child(2){
 table tbody tr td:nth-child(3){
     width: 70mm;
 }
+table tbody tr {
+    height: 10mm;
+}
 .billing-row{
     text-align: center;
     margin-left: 91mm;
