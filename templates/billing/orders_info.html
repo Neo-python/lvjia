@@ -1,8 +1,12 @@
 <style>
-    body{
+    body {
         width: 297mm;
-        height: 210mm;
+        {#height: 210mm;#}
+        margin: 0;
+        border: solid 1px;
+        height: auto;
     }
+
     .print-btn {
         float: right;
     }
@@ -32,7 +36,7 @@
 
     .summary-wrapper {
         display: flex;
-        position: relative;
+        position: static;
         bottom: 0;
     }
 
@@ -75,12 +79,12 @@
     {% for order in orders %}
         <div>
             <ul>
-                <li class="notlist"> <i class="fa fa-square-o"></i> {{ order.firm.name }}</li>
+                <li class="notlist"><i class="fa fa-square-o"></i> {{ order.firm.name }}</li>
                 {% if order.remarks %}
                     <li>{{ order.remarks }}</li>
                 {% endif %}
                 {% with name = Name() %}
-                    {% for form in order.forms %}
+                    {% for form in order.forms.order_by('person_id').all() %}
                         {% if name.check(form.person.name) %}
                             <li class="notlist">
                                 &nbsp;&nbsp;&nbsp;{{ form.product.name }}{{ form.real_quantity }}{{ form.unit.name }}

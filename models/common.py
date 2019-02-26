@@ -208,12 +208,16 @@ class Order(Common, db.Model):
     datetime = db.Column(db.TIMESTAMP, name='datetime', nullable=False, comment='订单创建日期')
     deadline = db.Column(db.Date, comment='订单期限')
 
-    forms = db.relationship('OrderForm', lazy='select', cascade="all, delete-orphan", backref='order')
+    forms = db.relationship('OrderForm', lazy='dynamic', cascade="all, delete-orphan", backref='order')
 
     def __init__(self, firm_id: int, remarks: str, deadline=None):
         self.firm_id = firm_id
         self.remarks = OrmVerity.verify_null_value(value=remarks, result=None)
         self.deadline = OrmVerity.verify_deadline(deadline=deadline)
+
+    def form_all(self):
+        """获取全部表单"""
+        return self.forms.all()
 
     def peoples_info(self):
         """获取订单联系人集合"""

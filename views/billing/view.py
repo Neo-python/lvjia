@@ -24,7 +24,10 @@ def invoice_print(order_id):
     """发货单打印"""
     order = Order.query.get(order_id)
     price_sum = round(sum([form.price * form.quantity for form in order.forms]), 2)
-    return render_template('billing/invoice_common.html', order=order, price_sum=price_sum)
+    if order.firm_id == 2:
+        return render_template('billing/invoice_dx.html', order=order, price_sum=price_sum)
+    else:
+        return render_template('billing/invoice_common.html', order=order, price_sum=price_sum)
 
 
 @billing.route('/orders_info/', methods=['GET'])
@@ -39,7 +42,7 @@ def orders_info():
 
     orders = Order.query.filter(Order.id.in_(order_ids)).all()
 
-    sort = [(len(order_.forms), order_) for order_ in orders]
+    sort = [(len(order_.form_all()), order_) for order_ in orders]
     sort.sort(key=lambda x: x[0], reverse=True)
     orders = [item[1] for item in sort]
 

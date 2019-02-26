@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>大鑫打印</title>
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/invoice_dx.css">
+</head>
+<body>
+<div>
+    <button onclick="history.back(-1)" class="cancel-btn">取消/返回</button>
+    <button onclick="window.print()" class="print-btn">打印</button>
+</div>
+<div>
+    <div class="table-div">
+        <div class="selfInfo">
+            <div>卢斌林</div>
+            <div>13106464571 <span>{{ order.deadline_format('%Y-%m-%d',True) }}</span></div>
+        </div>
+        <table>
+            <tbody>
+            {% for form in order.forms %}
+                <tr>
+                    <td>{{ form.person.name }}</td>
+                    <td>{{ form.product.name }}</td>
+                    <td>{{ form.quantity }} {{ form.unit.name }}</td>
+                    <td>{{ form.price }}</td>
+                    <td>{{ (form.price* form.quantity)|round(2) }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <div class="billing-row">
+            <div style="font-size: 20px;font-weight: bolder">{{ price_sum }}</div>
+        </div>
+    </div>
+</div>
+<script>
+    window.onload = function () {
+        window.print();
+    }
+</script>
+</body>
+</html>
