@@ -34,7 +34,11 @@ class OrmVerity:
 
     @staticmethod
     def verify_deadline(deadline: str, fmt: str = '%Y-%m-%d %H:%M'):
-        """验证期限"""
+        """验证期限,阻止非法值存入
+        :param deadline: 检验对象
+        :param fmt: str -> datetime.datetime 格式化格式
+        :return: None or datetime.datetime
+        """
         if not deadline:
             return None
         try:
@@ -61,7 +65,8 @@ class OrmVerity:
 
 class OrdersInfo:
     """订单信息集合
-    OrdersInfo(orders=orders, real=xbool).collect_quantity()
+    OrdersInfo(orders=orders, real=xbool).collect_forms()
+                                         .collect_quantity()
     :param real: 订单信息汇总报表打印
     """
 
@@ -72,7 +77,9 @@ class OrdersInfo:
         self.forms = forms
 
     def collect_forms(self):
-        """计算多个表单"""
+        """统计多个Order_form的产品与订单数量,使用product_unit.parent=0的基础单位进行总数的统计
+        :return: self.form_info
+        """
         if not self.real:
             for form in self.forms:
                 self.update(form=form)
@@ -82,13 +89,13 @@ class OrdersInfo:
         return self.form_info
 
     def collect_quantity(self) -> dict:
-        """计算多个订单产品数量"""
+        """统计多个Order的产品与订单数量,使用product_unit.parent=0的基础单位进行总数的统计"""
         for order in self.orders:
             self._forms(order=order)
         return self.form_info
 
     def _forms(self, order):
-        """订单抽取单条表单"""
+        """从Order中迭代forms统计累计数据"""
         if not self.real:
             for form in order.forms:
                 self.update(form=form)
@@ -97,7 +104,7 @@ class OrdersInfo:
                 self.real_update(form=form)
 
     def real_update(self, form):
-        """更新实数"""
+        """更新实数数据到self.form_info"""
         multiple = form.unit.multiple / form.unit.parent_unit.multiple
         if self.form_info.get(form.product.name):
             """已有记录的产品"""
@@ -111,7 +118,7 @@ class OrdersInfo:
             }
 
     def update(self, form):
-        """更新数据"""
+        """更新普通数据到self.form_info"""
         multiple = form.unit.multiple / form.unit.parent_unit.multiple
         if self.form_info.get(form.product.name):
             """已有记录的产品"""

@@ -6,10 +6,16 @@ from plugins.common import OrdersInfo
 
 
 class Name:
+    """生产详情页,检测上下两个表单联系人是否相同,相同的情况下不再标注联系人姓名"""
+
     def __init__(self):
+        """用法单一,无需设置参数"""
         self.name = ''
 
-    def check(self, name):
+    def check(self, name: str) -> bool:
+        """检测联系人
+        :param name: order_form订单联系人信息
+        """
         if self.name == name:
             return True
         else:
@@ -18,14 +24,16 @@ class Name:
 
 
 def orders_info(orders: list) -> dict:
-    """jinja模板函数"""
+    """jinja模板直接调取多个order订单聚合数据"""
     return OrdersInfo(orders=orders).collect_quantity()
 
 
-def real_status():
-    """验证实数权限状态"""
+def real_status() -> bool:
+    """验证实数权限状态
+    将当前session记录的唯一session_id与redis缓存的唯一session_id进行匹配.
+    """
     admin = session.get('admin')
-    if admin:
+    if admin:  # session过期时,直接返回False.不再读取redis.
         session_id = session.get('session_id')
         redis_token = Redis.get(f'real_admin_{admin.get("id")}')
         if redis_token == session_id:
@@ -33,8 +41,13 @@ def real_status():
     return False
 
 
-def form_total_price(forms, real: bool = False):
-    """单项表单总价计算"""
+def form_total_price(forms, real: bool = False) -> float:
+    """多条表单总价计算
+    计算多个order_form表单总价
+    :param forms: 多条order_form
+    :param real: False:form.quantity  True:form.real_quantity
+    :return: 多条表单总价
+    """
     price = 0.0
     for form in forms:
         if real:
@@ -44,16 +57,22 @@ def form_total_price(forms, real: bool = False):
     return price
 
 
-def orders_total_price(orders, real: bool = False):
-    """订单集合总价"""
+def orders_total_price(orders, real: bool = False) -> bool:
+    """多个订单总价
+    :param orders: Order
+    :param real: real: False:form.quantity  True:form.real_quantity
+    :return: 多个订单总价
+    """
     price = 0.0
     for order in orders:
         price += form_total_price(forms=order.forms, real=real)
     return price
 
 
-def blueprint(aims: str):
+def blueprint(aims: str) -> str:
     """判断当前蓝图与目标蓝图是否一致
+    request.blueprint -> 当前蓝图名
+    :param aims: 需要确认是否一致的蓝图名
     :return: 'active' or ''
     """
     if request.blueprint == aims:

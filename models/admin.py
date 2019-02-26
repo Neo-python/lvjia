@@ -37,7 +37,7 @@ class Admin(Common, db.Model):
     def login(account: str, password: str):
         """登入账户
         :param account: 账号
-        :param password: string密码
+        :param password: 密码
         :return: None:账号错误 False:密码错误 True:验证通过,返回模型实例
         """
         admin = Admin.query.filter_by(account=account).first()

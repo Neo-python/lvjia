@@ -21,7 +21,7 @@ class Firm(Common, db.Model):
         self.address = address
 
     def init_external_price(self):
-        """初始化所有产品的公司专价,只允许在新建公司时执行一次"""
+        """初始化所有产品的公司专价,只允许在新增公司时执行一次"""
         for product in Product.query.all():
             for unit in product.units:
                 ExternalPrice(product.id, self.id, unit.price, unit.id).direct_add_()
@@ -34,11 +34,11 @@ class Firm(Common, db.Model):
 
     @property
     def product_data(self):
-        """得到所有产品数据
+        """得到所有产品绑定的计量单位数据 Product.unit
         result = {
-            product.id:{unit.id:{name: unit.name}}
+            product.id:{unit.id:{'name': unit.name}}
         }
-        :return:
+        :return: result
         """
         result = dict()
         for i in self.EP:
@@ -99,7 +99,11 @@ class ProductUnit(Common, db.Model):
 
     @property
     def parent(self):
-        """上级对象"""
+        """获取当前单位的上级ProductUnit
+        getattr(self, '_parent', None) 查询缓存结果
+        self.parent_id is not 0        存在上级ProductUnit
+        :return: ProductUnit or None
+        """
         if getattr(self, '_parent', None) or self.parent_id is not 0:
             # 查询到上级对象时,缓存上级对象
             self._parent = ProductUnit.query.get(self.parent_id)
@@ -109,7 +113,9 @@ class ProductUnit(Common, db.Model):
 
     @property
     def parent_unit(self):
-        """父级单位"""
+        """获取上级ProductUnit,准确的说是,获取顶级单位
+        :return: 不再有更高一级的单位时,返回自己本身.
+        """
         if self.parent:
             return self.parent
         else:
