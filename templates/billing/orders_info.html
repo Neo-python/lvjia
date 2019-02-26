@@ -59,13 +59,6 @@
         list-style-type: none
     }
 
-    .liDiv {
-        display: inline-block;
-    }
-
-    .liDiv-2 {
-        text-align: right;
-    }
     ul {
         width: 100%;
     }
@@ -90,14 +83,11 @@
                     {% for form in order.forms %}
                         {% if name.check(form.person.name) %}
                             <li class="notlist">
-                                <div class="liDiv-2">
-                                    {{ form.product.name }}{{ form.real_quantity }}{{ form.unit.name }}</div>
+                                &nbsp;&nbsp;&nbsp;{{ form.product.name }}{{ form.real_quantity }}{{ form.unit.name }}
                             </li>
                         {% else %}
                             <li>
-                                {{ form.person.name }}
-                                <div class="liDiv">
-                                    {{ form.product.name }}{{ form.real_quantity }}{{ form.unit.name }}</div>
+                                {{ form.person.name }}{{ form.product.name }}{{ form.real_quantity }}{{ form.unit.name }}
                             </li>
                         {% endif %}
                     {% endfor %}
