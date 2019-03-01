@@ -91,11 +91,11 @@
                     {% for form in order.forms.order_by('person_id').all() %}
                         {% if name.check(form.person.name) %}
                             <li class="notlist">
-                                &nbsp;&nbsp;&nbsp;{{ form.product.name }}{{ form.real_quantity }}{{ form.unit.name }}
+                                {{ form.product.name }}{{ form.real_quantity }}{{ form.unit.name }}
                             </li>
                         {% else %}
                             <li>
-                                {{ form.person.name }} {{ form.product.name }}{{ form.real_quantity }}{{ form.unit.name }}
+                                {{ form.person.name }} <br> {{ form.product.name }}{{ form.real_quantity }}{{ form.unit.name }}
                             </li>
                         {% endif %}
                     {% endfor %}
