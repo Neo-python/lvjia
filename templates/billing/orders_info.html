@@ -66,6 +66,10 @@
     ul {
         width: 100%;
     }
+    .now-input{
+        border: none;
+        font-size: 28px;
+    }
 </style>
 <link rel="stylesheet" href="/static/css/neo.css">
 <link rel="stylesheet" href="/static/css/font-awesome.css">
@@ -73,7 +77,7 @@
     <button onclick="history.back(-1)" class="cancel-btn">取消/返回</button>
     <button onclick="window.print()" class="print-btn">打印</button>
     <h1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;生产信息汇总
-        &nbsp;{{ now.strftime('%m月%d日') }}</h1>
+        &nbsp;<input type="text" value="{{ now.strftime('%m月%d日') }}" class="now-input"></h1>
 </div>
 <div class="wrapper-order-info">
     {% for order in orders %}
