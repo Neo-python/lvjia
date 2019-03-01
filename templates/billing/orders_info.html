@@ -85,7 +85,7 @@
             <ul>
                 <li class="notlist"><i class="fa fa-square-o"></i> {{ order.firm.name }}</li>
                 {% if order.remarks %}
-                    <li class="notlist"> <i class="fa fa-book"></i> {{ order.remarks }}</li>
+                    <li class="notlist"> <i class="fa fa-bookmark-o"></i> {{ order.remarks }}</li>
                 {% endif %}
                 {% with name = Name() %}
                     {% for form in order.forms.order_by('person_id').all() %}
